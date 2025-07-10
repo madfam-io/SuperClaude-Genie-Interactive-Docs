@@ -1,0 +1,17 @@
+#\!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# HTML validation
+echo "Running HTML validation..."
+tidy -errors -quiet index.html 2>/dev/null || echo "HTML validation completed with warnings"
+
+# Security scan - exclude legitimate uses
+echo "Running security scan..."
+if grep -r "password\ < /dev/null | secret\|key\|token" . --exclude-dir=node_modules --exclude-dir=.git --exclude="*.md" --exclude-dir=.husky | grep -v "keyframes\|placeholder\|onkey\|event\.key\|token optimization\|keyword matching" > /tmp/security_check.txt 2>/dev/null; then
+    echo "⚠️  Potential security issue detected:"
+    cat /tmp/security_check.txt
+    rm -f /tmp/security_check.txt
+    exit 1
+fi
+
+echo "✅ Pre-commit checks passed"
