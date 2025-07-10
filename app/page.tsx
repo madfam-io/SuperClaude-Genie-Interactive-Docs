@@ -11,6 +11,7 @@ import { GenieInterface } from '@/components/GenieInterface'
 import { EnhancedPersonaDashboard } from '@/components/EnhancedPersonaDashboard'
 import { MagicUIStudio } from '@/components/MagicUIStudio'
 import { AttachmentIntegration } from '@/components/AttachmentIntegration'
+import { GlassmorphismShowcase } from '@/components/GlassmorphismShowcase'
 import { Footer } from '@/components/Footer'
 import { NotificationProvider } from '@/components/NotificationProvider'
 import { ParallaxSection } from '@/components/ParallaxSection'
@@ -121,6 +122,18 @@ export default function Home() {
                   transition={{ duration: 0.8, delay: 0.2 }}
                 >
                   <MagicUIStudio />
+                </motion.div>
+              </ParallaxSection>
+
+              {/* Glassmorphism Showcase */}
+              <ParallaxSection className="py-20" speed={0.5} direction="up">
+                <motion.div
+                  initial={{ opacity: 0, y: 100 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-10%' }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
+                >
+                  <GlassmorphismShowcase />
                 </motion.div>
               </ParallaxSection>
 

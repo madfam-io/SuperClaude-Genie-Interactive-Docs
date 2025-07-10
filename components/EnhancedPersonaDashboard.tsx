@@ -4,6 +4,9 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card3D } from './Card3D'
 import { ParallaxSection } from './ParallaxSection'
+import { GlassmorphicCard } from './ui/GlassmorphicCard'
+import { MagicText } from './ui/MagicText'
+import { MagicButton } from './ui/MagicButton'
 
 interface Persona {
   id: string
@@ -118,18 +121,10 @@ export function EnhancedPersonaDashboard() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <motion.h2 
-            className="text-4xl md:text-5xl font-bold mb-6 text-gradient"
-            animate={{
-              backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-            }}
-            transition={{
-              duration: 5,
-              repeat: Infinity,
-              ease: 'linear'
-            }}
-          >
-            🎭 SuperClaude Personas
+          <motion.h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <MagicText variant="holographic" size="4xl">
+              🎭 SuperClaude Personas
+            </MagicText>
           </motion.h2>
           <p className="text-xl text-text-secondary max-w-3xl mx-auto">
             Choose your AI specialist persona for tailored assistance and expert guidance
@@ -151,11 +146,18 @@ export function EnhancedPersonaDashboard() {
               onHoverStart={() => setHoveredPersona(persona.id)}
               onHoverEnd={() => setHoveredPersona(null)}
             >
-              <Card3D
+              <GlassmorphicCard
+                variant={index % 2 === 0 ? 'holographic' : 'frosted'}
+                glow
+                magic={index < 3}
                 className="h-full cursor-pointer"
-                intensity={20}
-                glowColor={`${persona.color}40`}
                 onClick={() => setSelectedPersona(persona)}
+                whileHover={{ 
+                  scale: 1.05,
+                  rotateY: 5,
+                  rotateX: -5,
+                  transition: { duration: 0.3 }
+                }}
               >
                 <div className="relative h-full flex flex-col">
                   {/* Header */}
@@ -235,7 +237,7 @@ export function EnhancedPersonaDashboard() {
                     ))}
                   </div>
                 </div>
-              </Card3D>
+              </GlassmorphicCard>
             </motion.div>
           ))}
         </motion.div>
@@ -301,14 +303,15 @@ export function EnhancedPersonaDashboard() {
                   </div>
                 </div>
 
-                <motion.button
-                  className="w-full py-3 bg-gradient-to-r from-primary to-secondary text-white rounded-lg font-semibold"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                <MagicButton
+                  variant="holographic"
+                  size="lg"
+                  magic
+                  className="w-full text-white"
                   onClick={() => setSelectedPersona(null)}
                 >
                   Close
-                </motion.button>
+                </MagicButton>
               </motion.div>
             </motion.div>
           )}

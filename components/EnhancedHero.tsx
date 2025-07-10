@@ -3,6 +3,9 @@
 import { useState, useRef } from 'react'
 import { motion, useScroll, useTransform, useInView } from 'framer-motion'
 import { SearchBox } from './SearchBox'
+import { MagicText } from './ui/MagicText'
+import { MagicButton } from './ui/MagicButton'
+import { GlassmorphicCard } from './ui/GlassmorphicCard'
 
 export function EnhancedHero() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -82,25 +85,12 @@ export function EnhancedHero() {
           <div className="relative">
             <motion.h1 
               ref={titleRef}
-              className="text-4xl md:text-6xl lg:text-8xl font-bold mb-6 text-gradient relative z-10"
+              className="text-4xl md:text-6xl lg:text-8xl font-bold mb-6 relative z-10"
               style={{ perspective: 1000 }}
             >
-              {title.split('').map((char, index) => (
-                <motion.span
-                  key={index}
-                  variants={letterVariants}
-                  custom={index}
-                  className="inline-block"
-                  whileHover={{ 
-                    scale: 1.2, 
-                    color: '#6366f1',
-                    textShadow: '0 0 20px rgba(99, 102, 241, 0.8)',
-                    transition: { duration: 0.2 }
-                  }}
-                >
-                  {char === ' ' ? '\u00A0' : char}
-                </motion.span>
-              ))}
+              <MagicText variant="holographic" size="4xl" className="block">
+                {title}
+              </MagicText>
             </motion.h1>
             
             {/* Floating Magic Sparkles */}
@@ -133,19 +123,9 @@ export function EnhancedHero() {
             className="text-xl md:text-2xl lg:text-3xl text-text-secondary mb-8 leading-relaxed"
           >
             Transform your AI into a{' '}
-            <motion.span
-              className="text-gradient font-semibold"
-              animate={{
-                backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: 'linear'
-              }}
-            >
+            <MagicText variant="shimmer" size="3xl" className="inline-block font-semibold">
               SuperClaude command generator wizard
-            </motion.span>
+            </MagicText>
           </motion.p>
           
           {/* Enhanced Buttons */}
@@ -153,83 +133,61 @@ export function EnhancedHero() {
             variants={itemVariants}
             className="flex flex-col sm:flex-row justify-center gap-6 mb-12"
           >
-            <motion.button
+            <MagicButton
               onClick={() => scrollToSection('getting-started')}
-              className="group relative px-8 py-4 bg-gradient-to-r from-primary to-primary-dark text-white rounded-xl font-semibold overflow-hidden"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
+              variant="holographic"
+              size="lg"
+              magic
+              className="text-white"
             >
-              <span className="relative z-10">Get Started</span>
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-primary-dark to-secondary"
-                initial={{ x: '-100%' }}
-                whileHover={{ x: 0 }}
-                transition={{ duration: 0.3 }}
-              />
-              <motion.div
-                className="absolute inset-0"
-                animate={{
-                  boxShadow: [
-                    '0 0 20px rgba(99, 102, 241, 0.3)',
-                    '0 0 40px rgba(99, 102, 241, 0.6)',
-                    '0 0 20px rgba(99, 102, 241, 0.3)',
-                  ]
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-            </motion.button>
+              Get Started
+            </MagicButton>
             
-            <motion.button
+            <MagicButton
               onClick={() => scrollToSection('genie-interface')}
-              className="group relative px-8 py-4 border-2 border-primary text-primary rounded-xl font-semibold overflow-hidden backdrop-blur-sm"
-              whileHover={{ scale: 1.05, backgroundColor: 'rgba(99, 102, 241, 0.1)' }}
-              whileTap={{ scale: 0.95 }}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1 }}
+              variant="glass"
+              size="lg"
+              className="text-primary"
             >
-              <span className="relative z-10">Try Demo</span>
-              <motion.div
-                className="absolute inset-0 bg-primary"
-                initial={{ scale: 0, opacity: 0 }}
-                whileHover={{ scale: 1, opacity: 0.1 }}
-                transition={{ duration: 0.3 }}
-              />
-            </motion.button>
+              Try Demo
+            </MagicButton>
           </motion.div>
           
           {/* Enhanced Search Box */}
           <motion.div
             variants={itemVariants}
-            className="relative"
+            className="relative max-w-2xl mx-auto"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 1.2, type: "spring" as const, stiffness: 100 }}
           >
-            <SearchBox 
-              value={searchQuery}
-              onChange={setSearchQuery}
-              placeholder="Search commands, personas, or workflows..."
-            />
+            <GlassmorphicCard variant="frosted" glow className="p-2">
+              <SearchBox 
+                value={searchQuery}
+                onChange={setSearchQuery}
+                placeholder="Search commands, personas, or workflows..."
+              />
+            </GlassmorphicCard>
           </motion.div>
         </motion.div>
       </motion.div>
 
       {/* Floating 3D Elements */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {Array.from({ length: 10 }).map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-20 h-20 border border-primary/20 rounded-lg backdrop-blur-sm"
+            className={`absolute w-20 h-20 rounded-lg ${
+              i % 3 === 0 ? 'glass-holographic' : 
+              i % 3 === 1 ? 'glass-frosted' : 
+              'glass-chromatic'
+            }`}
             animate={{
               x: [0, 100, 0],
               y: [0, -100, 0],
               rotateX: [0, 360],
               rotateY: [0, 360],
-              opacity: [0.2, 0.8, 0.2],
+              opacity: [0.1, 0.6, 0.1],
             }}
             transition={{
               duration: 10 + i * 2,
@@ -244,6 +202,11 @@ export function EnhancedHero() {
             }}
           />
         ))}
+        
+        {/* Aurora Background Effect */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute inset-0 glow-aurora" />
+        </div>
       </div>
 
       {/* Scroll Indicator */}
