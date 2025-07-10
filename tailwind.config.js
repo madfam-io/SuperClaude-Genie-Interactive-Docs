@@ -8,82 +8,92 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
-      // Enhanced Color System - Cyberpunk meets Premium Elegance
+      // Modern Color System - Linear/Arc/Raycast inspired
       colors: {
-        // Core Brand Colors
+        // Base colors - clean, minimal, high contrast
+        background: {
+          DEFAULT: '#000000',
+          secondary: '#0a0a0a',
+          tertiary: '#141414',
+          card: '#1a1a1a',
+          overlay: '#0a0a0a/80',
+        },
+        
+        // Text colors - high contrast for readability
+        text: {
+          primary: '#ffffff',
+          secondary: '#a1a1a1',
+          muted: '#707070',
+          disabled: '#404040',
+        },
+        
+        // Accent colors - modern, vibrant, purposeful
+        accent: {
+          blue: '#0070f3',      // Vercel blue
+          purple: '#7c3aed',    // Linear purple
+          orange: '#ff6b35',    // Arc orange
+          green: '#10b981',     // Success green
+          red: '#ef4444',       // Error red
+          yellow: '#f59e0b',    // Warning yellow
+        },
+        
+        // Neon accents for highlights
+        neon: {
+          blue: '#00d4ff',
+          purple: '#a855f7',
+          green: '#22c55e',
+          orange: '#ff8c00',
+          pink: '#f472b6',
+        },
+        
+        // Borders and surfaces
+        border: {
+          DEFAULT: '#262626',
+          secondary: '#404040',
+          accent: '#525252',
+        },
+        
+        // Glass morphism
+        glass: {
+          light: 'rgba(255, 255, 255, 0.05)',
+          medium: 'rgba(255, 255, 255, 0.1)',
+          strong: 'rgba(255, 255, 255, 0.15)',
+        },
+        
+        // Legacy compatibility
         primary: {
           50: '#eef2ff',
           100: '#e0e7ff', 
           400: '#818cf8',
-          500: '#6366f1', // Main primary
-          600: '#4f46e5',
-          700: '#4338ca',
-          800: '#3730a3',
-          900: '#312e81',
-          950: '#1e1b4b',
+          500: '#0070f3',
+          600: '#0051a5',
+          700: '#0039a6',
+          800: '#002e8b',
+          900: '#001e6f',
+          950: '#00102b',
         },
         
-        // Cyberpunk Neon Palette
-        cyber: {
-          cyan: '#00ffff',
-          'cyan-dark': '#00d4d4',
-          magenta: '#ff00ff',
-          'magenta-dark': '#cc00cc',
-          lime: '#00ff88',
-          'lime-dark': '#00cc6a',
-          orange: '#ff6b35',
-          blue: '#0080ff',
-          purple: '#8b5cf6',
-        },
+        // Semantic colors
+        success: '#10b981',
+        warning: '#f59e0b',
+        error: '#ef4444',
         
-        // Premium Grays (Inspired by Stripe/Linear)
-        gray: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          900: '#0f172a',
-          925: '#0a0f1c',
-          950: '#030712',
-        },
-        
-        // Background System
-        background: {
-          'void': '#000000',
-          'dark': '#0a0a0a',
-          'darker': '#030712',
-          'slate': '#0f172a',
-          'card': '#1e293b',
-          'elevated': '#334155',
-        },
-        
-        // Text Hierarchy
-        text: {
-          primary: '#ffffff',
-          secondary: '#e2e8f0',
-          muted: '#94a3b8',
-          'ultra-muted': '#64748b',
-        },
-        
-        // Semantic Colors
-        success: '#00ff88',
-        warning: '#ff6b35',
-        error: '#ff4757',
-        
-        // Legacy Support
-        'bg-dark': '#0a0a0a',
-        'bg-light': '#1e293b',
-        'bg-card': '#1e293b',
+        // Legacy support
+        'bg-dark': '#000000',
+        'bg-light': '#1a1a1a',
+        'bg-card': '#1a1a1a',
         'text-primary': '#ffffff',
-        'text-secondary': '#e2e8f0',
-        'text-muted': '#94a3b8',
-        secondary: '#8b5cf6',
-        accent: '#ff00ff',
+        'text-secondary': '#a1a1a1',
+        'text-muted': '#707070',
+        secondary: '#7c3aed',
+        cyber: {
+          cyan: '#00d4ff',
+          magenta: '#a855f7',
+          lime: '#22c55e',
+          orange: '#ff8c00',
+          blue: '#0070f3',
+          purple: '#7c3aed',
+        },
       },
       
       // Enhanced Typography (Inspired by Vercel/Linear)
@@ -171,133 +181,87 @@ module.exports = {
         'gradient-holographic': 'linear-gradient(45deg, #00ffff, #8b5cf6, #ff00ff, #00ff88, #0080ff, #00ffff)',
       },
       
-      // Enhanced Animations (Linear/Vercel-inspired)
+      // GPU-optimized animations - smooth, purposeful, 60fps
       animation: {
-        // Subtle animations
-        'float': 'float 6s ease-in-out infinite',
-        'glow': 'glow 3s ease-in-out infinite alternate',
-        'rotate': 'rotate 20s linear infinite',
-        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
-        'fade-in': 'fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
-        'slide-up': 'slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
-        'scale-in': 'scale-in 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        // Core animations - inspired by Linear/Arc/Raycast
+        'fade-in': 'fadeIn 0.5s ease-out',
+        'slide-up': 'slideUp 0.5s ease-out',
+        'slide-down': 'slideDown 0.5s ease-out',
+        'scale-in': 'scaleIn 0.3s ease-out',
+        'glow': 'glow 2s ease-in-out infinite alternate',
+        'float': 'float 3s ease-in-out infinite',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'shimmer': 'shimmer 2s linear infinite',
+        'bounce-gentle': 'bounceGentle 2s ease-in-out infinite',
         
-        // Cyberpunk animations
-        'cyber-pulse': 'cyber-pulse 3s ease-in-out infinite',
-        'neural-flow': 'neural-flow 8s ease-in-out infinite',
-        'holographic': 'holographic 6s ease-in-out infinite',
-        'shimmer': 'shimmer 2s ease-in-out infinite',
+        // 3D and smooth micro-interactions
+        'rotate-smooth': 'rotateSmooth 10s linear infinite',
+        'hover-lift': 'hoverLift 0.3s ease-out',
+        'press-down': 'pressDown 0.1s ease-out',
         
-        // Micro-interactions
-        'micro-bounce': 'micro-bounce 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-        'micro-scale': 'micro-scale 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+        // Performance optimized
+        'gpu-fade': 'gpuFade 0.4s ease-out',
+        'gpu-slide': 'gpuSlide 0.4s ease-out',
+        'gpu-scale': 'gpuScale 0.3s ease-out',
       },
       
-      // Enhanced Keyframes
+      // GPU-optimized keyframes - performance first
       keyframes: {
-        // Smooth, performance-optimized animations
-        float: {
-          '0%, 100%': { 
-            transform: 'translateY(0px) translateZ(0)', 
-          },
-          '50%': { 
-            transform: 'translateY(-10px) translateZ(0)', 
-          },
+        fadeIn: {
+          '0%': { opacity: '0', transform: 'translateZ(0)' },
+          '100%': { opacity: '1', transform: 'translateZ(0)' },
+        },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(20px) translateZ(0)' },
+          '100%': { opacity: '1', transform: 'translateY(0) translateZ(0)' },
+        },
+        slideDown: {
+          '0%': { opacity: '0', transform: 'translateY(-20px) translateZ(0)' },
+          '100%': { opacity: '1', transform: 'translateY(0) translateZ(0)' },
+        },
+        scaleIn: {
+          '0%': { opacity: '0', transform: 'scale(0.9) translateZ(0)' },
+          '100%': { opacity: '1', transform: 'scale(1) translateZ(0)' },
         },
         glow: {
-          '0%': { 
-            filter: 'brightness(1) saturate(1)', 
-            boxShadow: '0 0 20px rgba(0, 255, 255, 0.3)' 
-          },
-          '100%': { 
-            filter: 'brightness(1.1) saturate(1.2)', 
-            boxShadow: '0 0 40px rgba(0, 255, 255, 0.6)' 
-          },
+          '0%': { boxShadow: '0 0 20px rgba(0, 112, 243, 0.3)' },
+          '100%': { boxShadow: '0 0 30px rgba(0, 112, 243, 0.6)' },
         },
-        'pulse-glow': {
-          '0%, 100%': { 
-            boxShadow: '0 0 20px rgba(99, 102, 241, 0.3)' 
-          },
-          '50%': { 
-            boxShadow: '0 0 40px rgba(99, 102, 241, 0.6), 0 0 60px rgba(139, 92, 246, 0.4)' 
-          },
-        },
-        'fade-in': {
-          '0%': { 
-            opacity: '0', 
-            transform: 'translateY(10px) scale(0.98)' 
-          },
-          '100%': { 
-            opacity: '1', 
-            transform: 'translateY(0) scale(1)' 
-          },
-        },
-        'slide-up': {
-          '0%': { 
-            opacity: '0', 
-            transform: 'translateY(20px)' 
-          },
-          '100%': { 
-            opacity: '1', 
-            transform: 'translateY(0)' 
-          },
-        },
-        'scale-in': {
-          '0%': { 
-            opacity: '0', 
-            transform: 'scale(0.95)' 
-          },
-          '100%': { 
-            opacity: '1', 
-            transform: 'scale(1)' 
-          },
-        },
-        'cyber-pulse': {
-          '0%, 100%': { 
-            boxShadow: '0 0 20px rgba(0, 255, 255, 0.3)',
-            borderColor: 'rgba(0, 255, 255, 0.3)',
-          },
-          '50%': { 
-            boxShadow: '0 0 40px rgba(0, 255, 255, 0.8), 0 0 60px rgba(0, 255, 255, 0.4)',
-            borderColor: 'rgba(0, 255, 255, 0.8)',
-          },
-        },
-        'neural-flow': {
-          '0%, 100%': { 
-            backgroundPosition: '0% 50%' 
-          },
-          '50%': { 
-            backgroundPosition: '100% 50%' 
-          },
-        },
-        holographic: {
-          '0%, 100%': { 
-            filter: 'hue-rotate(0deg)' 
-          },
-          '50%': { 
-            filter: 'hue-rotate(180deg)' 
-          },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px) translateZ(0)' },
+          '50%': { transform: 'translateY(-10px) translateZ(0)' },
         },
         shimmer: {
-          '0%': { 
-            backgroundPosition: '-200% 0' 
-          },
-          '100%': { 
-            backgroundPosition: '200% 0' 
-          },
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
         },
-        'micro-bounce': {
-          '0%': { transform: 'scale(1)' },
-          '50%': { transform: 'scale(1.05)' },
-          '100%': { transform: 'scale(1)' },
+        bounceGentle: {
+          '0%, 100%': { transform: 'translateY(0) translateZ(0)' },
+          '50%': { transform: 'translateY(-5px) translateZ(0)' },
         },
-        'micro-scale': {
-          '0%': { transform: 'scale(1)' },
-          '100%': { transform: 'scale(1.02)' },
+        rotateSmooth: {
+          '0%': { transform: 'rotate(0deg) translateZ(0)' },
+          '100%': { transform: 'rotate(360deg) translateZ(0)' },
         },
-        rotate: {
-          '0%': { transform: 'rotate(0deg)' },
-          '100%': { transform: 'rotate(360deg)' },
+        hoverLift: {
+          '0%': { transform: 'translateY(0) translateZ(0)' },
+          '100%': { transform: 'translateY(-2px) translateZ(0)' },
+        },
+        pressDown: {
+          '0%': { transform: 'scale(1) translateZ(0)' },
+          '100%': { transform: 'scale(0.98) translateZ(0)' },
+        },
+        gpuFade: {
+          '0%': { opacity: '0', transform: 'translateZ(0)' },
+          '100%': { opacity: '1', transform: 'translateZ(0)' },
+        },
+        gpuSlide: {
+          '0%': { opacity: '0', transform: 'translateY(10px) translateZ(0)' },
+          '100%': { opacity: '1', transform: 'translateY(0) translateZ(0)' },
+        },
+        gpuScale: {
+          '0%': { opacity: '0', transform: 'scale(0.95) translateZ(0)' },
+          '100%': { opacity: '1', transform: 'scale(1) translateZ(0)' },
         },
       },
       
@@ -326,5 +290,86 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // Custom utilities for modern design
+    function({ addUtilities, addComponents }) {
+      addUtilities({
+        '.glass-light': {
+          'background': 'rgba(255, 255, 255, 0.05)',
+          'backdrop-filter': 'blur(10px)',
+          'border': '1px solid rgba(255, 255, 255, 0.1)',
+        },
+        '.glass-medium': {
+          'background': 'rgba(255, 255, 255, 0.1)',
+          'backdrop-filter': 'blur(15px)',
+          'border': '1px solid rgba(255, 255, 255, 0.15)',
+        },
+        '.glass-strong': {
+          'background': 'rgba(255, 255, 255, 0.15)',
+          'backdrop-filter': 'blur(20px)',
+          'border': '1px solid rgba(255, 255, 255, 0.2)',
+        },
+        '.text-shadow': {
+          'text-shadow': '0 2px 4px rgba(0, 0, 0, 0.3)',
+        },
+        '.smooth-transition': {
+          'transition': 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        },
+        '.gpu-optimized': {
+          'transform': 'translateZ(0)',
+          'will-change': 'transform',
+        },
+        '.bento-grid': {
+          'display': 'grid',
+          'grid-template-columns': 'repeat(auto-fit, minmax(300px, 1fr))',
+          'gap': '1rem',
+        },
+        '.raycast-blur': {
+          'backdrop-filter': 'blur(20px) saturate(180%)',
+          'background': 'rgba(255, 255, 255, 0.08)',
+        },
+        '.linear-border': {
+          'border': '1px solid rgba(255, 255, 255, 0.1)',
+          'border-radius': '0.75rem',
+        },
+        '.arc-hover': {
+          'transition': 'all 0.2s ease-out',
+          '&:hover': {
+            'transform': 'translateY(-1px)',
+            'box-shadow': '0 4px 20px rgba(0, 0, 0, 0.15)',
+          },
+        },
+      })
+      
+      addComponents({
+        '.btn-modern': {
+          'padding': '0.75rem 1.5rem',
+          'border-radius': '0.75rem',
+          'font-weight': '500',
+          'transition': 'all 0.2s ease-out',
+          'background': 'rgba(255, 255, 255, 0.05)',
+          'border': '1px solid rgba(255, 255, 255, 0.1)',
+          'color': 'white',
+          '&:hover': {
+            'background': 'rgba(255, 255, 255, 0.1)',
+            'border-color': 'rgba(255, 255, 255, 0.2)',
+            'transform': 'translateY(-1px)',
+          },
+        },
+        '.card-modern': {
+          'background': 'rgba(255, 255, 255, 0.05)',
+          'backdrop-filter': 'blur(10px)',
+          'border': '1px solid rgba(255, 255, 255, 0.1)',
+          'border-radius': '1rem',
+          'padding': '1.5rem',
+          'transition': 'all 0.3s ease-out',
+          '&:hover': {
+            'background': 'rgba(255, 255, 255, 0.08)',
+            'border-color': 'rgba(255, 255, 255, 0.15)',
+            'transform': 'translateY(-2px)',
+          },
+        },
+      })
+    },
+  ],
 }

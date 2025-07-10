@@ -1,56 +1,40 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { motion } from 'framer-motion'
-import { SmoothScrollProvider } from '@/components/SmoothScrollProvider'
-import { PremiumNavigation } from '@/components/PremiumNavigation'
-import { PremiumHero } from '@/components/PremiumHero'
-import { TabSection } from '@/components/TabSection'
-import { EnhancedAnimatedBackground } from '@/components/EnhancedAnimatedBackground'
-import { PremiumGenieInterface } from '@/components/PremiumGenieInterface'
-import { PremiumPersonaDashboard } from '@/components/PremiumPersonaDashboard'
-import { MagicUIStudio } from '@/components/MagicUIStudio'
-import { AttachmentIntegration } from '@/components/AttachmentIntegration'
-import { GlassmorphismShowcase } from '@/components/GlassmorphismShowcase'
-import { Footer } from '@/components/Footer'
+import dynamic from 'next/dynamic'
+import ModernNavigation from '@/components/ModernNavigation'
+import ModernDashboard from '@/components/ModernDashboard'
 import { NotificationProvider } from '@/components/NotificationProvider'
-import { ParallaxSection } from '@/components/ParallaxSection'
-import { CommandSearch } from '@/components/CommandSearch'
-import { ThemeToggle } from '@/components/ThemeToggle'
+
+// Lazy load the 3D Hero for better performance
+const Hero3D = dynamic(() => import('@/components/Hero3D'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-screen bg-background flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-pulse text-6xl font-bold text-text-primary mb-4">
+          SuperClaude
+        </div>
+        <div className="text-text-secondary">Loading 3D Experience...</div>
+      </div>
+    </div>
+  )
+})
 
 export default function Home() {
   const [mounted, setMounted] = useState(false)
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [searchOpen, setSearchOpen] = useState(false)
 
   useEffect(() => {
     setMounted(true)
-
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
-    }
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault()
-        setSearchOpen(true)
-      }
-    }
-
-    window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('keydown', handleKeyDown)
-    
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('keydown', handleKeyDown)
-    }
   }, [])
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-bg-dark flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <motion.div
-          className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full"
+          className="w-16 h-16 border-4 border-accent-blue border-t-transparent rounded-full"
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
         />
@@ -59,179 +43,122 @@ export default function Home() {
   }
 
   return (
-    <SmoothScrollProvider>
-      <NotificationProvider>
-        <div className="relative min-h-screen bg-bg-dark text-text-primary overflow-x-hidden">
-          {/* Enhanced Animated Background */}
-          <EnhancedAnimatedBackground />
+    <NotificationProvider>
+      <div className="relative min-h-screen bg-background text-text-primary overflow-x-hidden">
+        {/* Navigation */}
+        <ModernNavigation onSearchToggle={setSearchOpen} />
+        
+        {/* Hero Section with 3D */}
+        <Hero3D />
 
-          {/* Cursor Follow Effect */}
-          <motion.div
-            className="fixed w-6 h-6 bg-primary/20 rounded-full pointer-events-none z-50 mix-blend-difference"
-            animate={{
-              x: mousePosition.x - 12,
-              y: mousePosition.y - 12,
-            }}
-            transition={{
-              type: "spring" as const,
-              stiffness: 500,
-              damping: 28,
-            }}
-          />
+        {/* Modern Dashboard */}
+        <ModernDashboard />
 
-          {/* Navigation */}
-          <PremiumNavigation />
-          
-          {/* Hero Section */}
-          <PremiumHero />
-
-          {/* Content Sections with Parallax */}
-          <ParallaxSection className="relative z-10" speed={0.5}>
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-              {/* Tab Section */}
-              <motion.div
-                initial={{ opacity: 0, y: 100 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-10%' }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
-                <TabSection />
-              </motion.div>
-
-              {/* Genie Interface */}
-              <ParallaxSection className="py-20" speed={0.3} direction="up">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true, margin: '-10%' }}
-                  transition={{ duration: 0.8, delay: 0.1 }}
-                >
-                  <PremiumGenieInterface />
-                </motion.div>
-              </ParallaxSection>
-
-              {/* Enhanced Persona Dashboard */}
-              <PremiumPersonaDashboard />
-
-              {/* Magic UI Studio */}
-              <ParallaxSection className="py-20" speed={0.4} direction="left">
-                <motion.div
-                  initial={{ opacity: 0, x: 100 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: '-10%' }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                >
-                  <MagicUIStudio />
-                </motion.div>
-              </ParallaxSection>
-
-              {/* Glassmorphism Showcase */}
-              <ParallaxSection className="py-20" speed={0.5} direction="up">
-                <motion.div
-                  initial={{ opacity: 0, y: 100 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-10%' }}
-                  transition={{ duration: 0.8, delay: 0.3 }}
-                >
-                  <GlassmorphismShowcase />
-                </motion.div>
-              </ParallaxSection>
-
-              {/* Attachment Integration */}
-              <ParallaxSection className="py-20" speed={0.6} direction="right">
-                <motion.div
-                  initial={{ opacity: 0, x: -100 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: '-10%' }}
-                  transition={{ duration: 0.8, delay: 0.3 }}
-                >
-                  <AttachmentIntegration />
-                </motion.div>
-              </ParallaxSection>
-            </div>
-          </ParallaxSection>
-          
-          {/* Footer */}
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <Footer />
-          </motion.div>
-
-          {/* Floating Action Elements */}
-          <div className="fixed bottom-8 right-8 z-40">
+        {/* Features Section */}
+        <section className="py-24 relative" id="features">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <motion.div
-              className="flex flex-col space-y-4"
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 2, duration: 0.5 }}
+              className="text-center mb-16"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
             >
-              {/* Command Search */}
-              <motion.button
-                onClick={() => setSearchOpen(true)}
-                className="w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full shadow-lg flex items-center justify-center text-2xl"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                title="Search Commands (⌘K)"
-              >
-                🔍
-              </motion.button>
-
-              {/* Theme Toggle */}
-              <ThemeToggle />
-
-              {/* Magic Wand */}
-              <motion.button
-                className="w-14 h-14 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-lg flex items-center justify-center text-2xl"
-                whileHover={{ scale: 1.1, rotate: 15 }}
-                whileTap={{ scale: 0.9 }}
-                animate={{
-                  boxShadow: [
-                    '0 0 20px rgba(168, 85, 247, 0.4)',
-                    '0 0 40px rgba(168, 85, 247, 0.8)',
-                    '0 0 20px rgba(168, 85, 247, 0.4)',
-                  ]
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-                onClick={() => {
-                  const sparkles = document.createElement('div')
-                  sparkles.className = 'fixed inset-0 pointer-events-none z-50'
-                  sparkles.innerHTML = Array.from({ length: 20 }).map(() => 
-                    `<div class="absolute w-2 h-2 bg-yellow-400 rounded-full animate-ping" style="left: ${Math.random() * 100}%; top: ${Math.random() * 100}%; animation-delay: ${Math.random() * 2}s;"></div>`
-                  ).join('')
-                  document.body.appendChild(sparkles)
-                  setTimeout(() => document.body.removeChild(sparkles), 3000)
-                }}
-              >
-                🪄
-              </motion.button>
+              <h2 className="text-4xl lg:text-6xl font-bold mb-6">
+                <span className="text-text-primary">Built for </span>
+                <span className="text-accent-purple">Modern Developers</span>
+              </h2>
+              <p className="text-xl text-text-secondary max-w-3xl mx-auto">
+                Experience the future of development with AI-powered tools, 
+                intuitive interfaces, and lightning-fast performance.
+              </p>
             </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[
+                {
+                  icon: '⚡',
+                  title: 'Lightning Fast',
+                  description: 'GPU-optimized animations and 60fps interactions for a smooth experience.'
+                },
+                {
+                  icon: '🎯',
+                  title: 'Precision AI',
+                  description: 'Context-aware AI that understands your project and generates perfect commands.'
+                },
+                {
+                  icon: '🔧',
+                  title: 'Developer First',
+                  description: 'Built by developers for developers with modern tooling and best practices.'
+                },
+                {
+                  icon: '🌐',
+                  title: 'Universal',
+                  description: 'Works with any tech stack, framework, or development environment.'
+                },
+                {
+                  icon: '🔒',
+                  title: 'Secure',
+                  description: 'Enterprise-grade security with local processing and privacy protection.'
+                },
+                {
+                  icon: '📱',
+                  title: 'Mobile Ready',
+                  description: 'Responsive design with gesture-based interactions for mobile development.'
+                }
+              ].map((feature, index) => (
+                <motion.div
+                  key={index}
+                  className="card-modern p-6 h-full"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-10%" }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <div className="text-4xl mb-4">{feature.icon}</div>
+                  <h3 className="text-xl font-semibold text-text-primary mb-3">
+                    {feature.title}
+                  </h3>
+                  <p className="text-text-secondary leading-relaxed">
+                    {feature.description}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
           </div>
+        </section>
 
-          {/* Command Search Modal */}
-          <CommandSearch 
-            isOpen={searchOpen}
-            onClose={() => setSearchOpen(false)}
-            onCommandSelect={(command) => {
-              console.log('Selected command:', command)
-            }}
-          />
+        {/* Footer */}
+        <footer className="py-16 border-t border-border">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row items-center justify-between">
+              <div className="flex items-center space-x-2 mb-4 md:mb-0">
+                <div className="w-8 h-8 bg-accent-blue rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">SC</span>
+                </div>
+                <span className="text-text-primary font-semibold">SuperClaude Genie</span>
+              </div>
+              
+              <div className="flex items-center space-x-6 text-text-muted">
+                <span>© 2024 SuperClaude. All rights reserved.</span>
+                <span>•</span>
+                <a href="#" className="hover:text-text-primary transition-colors">Privacy</a>
+                <span>•</span>
+                <a href="#" className="hover:text-text-primary transition-colors">Terms</a>
+              </div>
+            </div>
+          </div>
+        </footer>
 
-          {/* Progress Indicator */}
-          <motion.div
-            className="fixed top-0 left-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent z-50"
-            style={{
-              transformOrigin: '0%',
-            }}
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 2, ease: 'easeInOut' }}
-          />
-        </div>
-      </NotificationProvider>
-    </SmoothScrollProvider>
+        {/* Progress Indicator */}
+        <motion.div
+          className="fixed top-0 left-0 h-1 bg-gradient-to-r from-accent-blue via-accent-purple to-accent-orange z-50"
+          style={{ transformOrigin: '0%' }}
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 2, ease: 'easeInOut' }}
+        />
+      </div>
+    </NotificationProvider>
   )
 }
