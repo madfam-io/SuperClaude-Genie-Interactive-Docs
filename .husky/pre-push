@@ -8,15 +8,15 @@ if [ "$current_branch" = "$protected_branch" ]; then
     
     # Final security scan
     echo "Running final security scan..."
-    sensitive_files=$(find . \( -name "*.env" -o -name "*.env.local" -o -name "*.env.production" -o -name "*.key" -o -name "*.pem" \) | grep -v node_modules | grep -v .git)
+    sensitive_files=$(find . \( -name "*.env" -o -name "*.env.local" -o -name "*.env.production" -o -name "*.key" -o -name "*.pem" \) | grep -v node_modules | grep -v .git | grep -v ".env.example")
     if [ -n "$sensitive_files" ]; then
         echo "❌ Sensitive files detected! Remove before pushing to main."
         echo "$sensitive_files"
         exit 1
     fi
     
-    # Check for large files (excluding git and node_modules)
-    large_files=$(find . -size +10M -type f | grep -v node_modules | grep -v .git)
+    # Check for large files (excluding git, node_modules, and .next)
+    large_files=$(find . -size +10M -type f | grep -v node_modules | grep -v .git | grep -v ".next")
     if [ -n "$large_files" ]; then
         echo "❌ Large files detected! Consider using Git LFS."
         echo "$large_files"
