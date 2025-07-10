@@ -73,6 +73,10 @@
   "author": "",
   "license": "ISC",
   "engines": {
-    "node": "18.x || 20.x"
+    "node": "18.x || 20.x || 22.x"
+  },
+  "overrides": {
+    "rimraf": "^5.0.5",
+    "glob": "^10.4.5"
   }
 }
