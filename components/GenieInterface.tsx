@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card } from './ui/card'
+import { Card } from './ui'
 import { CodeBlock } from './ui/CodeBlock'
 import { useNotification } from './NotificationProvider'
 import { useSupeClaudeAPI } from '@/lib/api-client'

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Card } from './ui/card'
+import { Card } from './ui'
 import { useNotification } from './NotificationProvider'
 
 export function PersonaDashboard() {

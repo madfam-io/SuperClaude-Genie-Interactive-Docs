@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
-  OPENAI_API_KEY: z.string().min(1, 'OpenAI API key is required'),
+  OPENAI_API_KEY: z.string().optional(),
   SESSION_SECRET: z.string().min(32, 'Session secret must be at least 32 characters'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   RATE_LIMIT_WINDOW_MS: z.string().transform(Number).default('900000'), // 15 minutes

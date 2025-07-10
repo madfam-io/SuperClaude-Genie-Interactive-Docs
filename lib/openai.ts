@@ -1,14 +1,18 @@
 import OpenAI from 'openai';
 import { streamText } from 'ai';
-import { openai as vercelOpenAI } from '@ai-sdk/openai';
+import { createOpenAI } from '@ai-sdk/openai';
 import { config } from './config';
 import { getPersonaContext } from './personas';
 import { GenerateCommandsRequest, GeneratedCommand, StreamChunk } from './types';
 import { v4 as uuidv4 } from 'uuid';
 
-// Initialize OpenAI client
+// Initialize OpenAI clients
 const openai = new OpenAI({
-  apiKey: config.OPENAI_API_KEY,
+  apiKey: config.OPENAI_API_KEY || 'placeholder-key-for-build',
+});
+
+const vercelOpenAI = createOpenAI({
+  apiKey: config.OPENAI_API_KEY || 'placeholder-key-for-build',
 });
 
 export class SuperClaudeAI {
@@ -31,6 +35,10 @@ export class SuperClaudeAI {
 
     const systemPrompt = this.buildSystemPrompt(persona, request);
     const userPrompt = this.buildUserPrompt(request);
+
+    if (!config.OPENAI_API_KEY) {
+      throw new Error('OpenAI API key is required but not configured');
+    }
 
     try {
       const result = await streamText({
@@ -56,6 +64,10 @@ export class SuperClaudeAI {
 
     const systemPrompt = this.buildJSONSystemPrompt(persona, request);
     const userPrompt = this.buildUserPrompt(request);
+
+    if (!config.OPENAI_API_KEY) {
+      throw new Error('OpenAI API key is required but not configured');
+    }
 
     try {
       const response = await openai.chat.completions.create({
@@ -206,6 +218,10 @@ ${context ? `Context: ${JSON.stringify(context)}` : ''}
 
 Provide a detailed simulation of what would happen when this command is executed.`;
 
+    if (!config.OPENAI_API_KEY) {
+      throw new Error('OpenAI API key is required but not configured');
+    }
+
     try {
       const response = await openai.chat.completions.create({
         model: 'gpt-4-turbo-preview',
@@ -246,6 +262,10 @@ Provide a detailed simulation of what would happen when this command is executed
 Be concise and actionable.`;
 
     const userPrompt = `Analyze this context: ${JSON.stringify(context)}`;
+
+    if (!config.OPENAI_API_KEY) {
+      throw new Error('OpenAI API key is required but not configured');
+    }
 
     try {
       const response = await openai.chat.completions.create({

@@ -8,7 +8,7 @@ if [ "$current_branch" = "$protected_branch" ]; then
     
     # Final security scan
     echo "Running final security scan..."
-    sensitive_files=$(find . -name "*.env*" -o -name "*.key" -o -name "*.pem" | grep -v node_modules | grep -v .git)
+    sensitive_files=$(find . \( -name "*.env" -o -name "*.env.local" -o -name "*.env.production" -o -name "*.key" -o -name "*.pem" \) | grep -v node_modules | grep -v .git)
     if [ -n "$sensitive_files" ]; then
         echo "❌ Sensitive files detected! Remove before pushing to main."
         echo "$sensitive_files"

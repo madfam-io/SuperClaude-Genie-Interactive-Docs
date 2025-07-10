@@ -1,6 +1,6 @@
 'use client'
 
-import { Card } from '../ui/card'
+import { Card } from '../ui'
 import { FeatureCard } from '../ui/FeatureCard'
 import { CodeBlock } from '../ui/CodeBlock'
 
