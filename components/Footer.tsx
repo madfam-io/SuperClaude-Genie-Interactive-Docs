@@ -36,9 +36,8 @@ export function Footer() {
         
         <button
           onClick={() => {
-            const geniePrompt = "You are SuperClaude Genie 🧞, an expert assistant specialized in generating precise SuperClaude commands..."
+            const geniePrompt = "You are SuperClaude Genie 🧞, an expert assistant specialized in generating precise SuperClaude commands for advanced AI workflows."
             navigator.clipboard.writeText(geniePrompt)
-            // Could use notification here if needed
           }}
           className="w-12 h-12 bg-secondary hover:bg-secondary/80 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center group"
           title="Copy Genie Prompt"
