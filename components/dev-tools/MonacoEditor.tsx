@@ -17,9 +17,22 @@ import {
   FileText
 } from 'lucide-react'
 
-// Monaco Editor dynamic import for better performance
+// Monaco Editor dynamic import with error handling
 const Editor = dynamic(
-  () => import('@monaco-editor/react'),
+  () => import('@monaco-editor/react').catch(() => {
+    // Fallback component if Monaco Editor fails to load
+    return Promise.resolve({ 
+      default: () => (
+        <div className="h-full bg-background-secondary rounded-lg border border-neon-blue/20 flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <div className="text-6xl">⚠️</div>
+            <div className="text-text-primary text-lg">Monaco Editor Unavailable</div>
+            <div className="text-text-secondary text-sm">Advanced code editor features are temporarily disabled</div>
+          </div>
+        </div>
+      )
+    })
+  }),
   { 
     ssr: false,
     loading: () => (
