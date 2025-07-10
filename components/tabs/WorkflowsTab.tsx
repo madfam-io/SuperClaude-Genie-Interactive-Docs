@@ -1,6 +1,6 @@
 'use client'
 
-import { Card } from '../ui/Card'
+import { Card } from '../ui/card'
 import { CodeBlock } from '../ui/CodeBlock'
 
 export function WorkflowsTab() {

@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import theme configuration */
+@import '../styles/themes.css';
+
 /* CSS Cascade Layers for better organization */
 @layer base, theme, glassmorphism, animations, utilities;
 
@@ -46,6 +49,24 @@
     --success: #10b981;
     --warning: #f59e0b;
     --error: #ef4444;
+    
+    /* Component Colors */
+    --background: var(--bg-dark);
+    --foreground: var(--text-primary);
+    --card: var(--bg-card);
+    --card-foreground: var(--text-primary);
+    --popover: var(--bg-card);
+    --popover-foreground: var(--text-primary);
+    --primary-foreground: #ffffff;
+    --secondary-foreground: #ffffff;
+    --muted: var(--bg-light);
+    --muted-foreground: var(--text-muted);
+    --accent-foreground: var(--text-primary);
+    --destructive: var(--error);
+    --destructive-foreground: #ffffff;
+    --border: rgba(255, 255, 255, 0.1);
+    --input: rgba(255, 255, 255, 0.1);
+    --ring: var(--primary);
     
     /* Enhanced Gradients */
     --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -192,6 +213,19 @@ a {
     box-shadow: 0 0 20px rgba(99, 102, 241, var(--glow-intensity)),
                 0 0 40px rgba(139, 92, 246, calc(var(--glow-intensity) * 0.5)),
                 inset 0 0 20px rgba(255, 255, 255, 0.05);
+  }
+  
+  /* Glass Variants for Components */
+  .glass-primary {
+    background: rgba(99, 102, 241, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  
+  .glass-secondary {
+    background: rgba(139, 92, 246, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
   }
   
   .glass-inset {

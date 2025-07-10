@@ -1,0 +1,20 @@
+// Export all UI components from a single entry point
+export * from './badge'
+export * from './button'
+export * from './card'
+export * from './dialog'
+export * from './dropdown-menu'
+export * from './input'
+export * from './label'
+export * from './select'
+export * from './separator'
+export * from './switch'
+export * from './tabs'
+export * from './tooltip'
+
+// Re-export existing components
+export * from './CodeBlock'
+export * from './FeatureCard'
+export * from './GlassmorphicCard'
+export * from './MagicButton'
+export * from './MagicText'
