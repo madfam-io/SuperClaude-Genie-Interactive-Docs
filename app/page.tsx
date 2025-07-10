@@ -1,45 +1,197 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { SmoothScrollProvider } from '@/components/SmoothScrollProvider'
 import { Navigation } from '@/components/Navigation'
-import { Hero } from '@/components/Hero'
+import { EnhancedHero } from '@/components/EnhancedHero'
 import { TabSection } from '@/components/TabSection'
-import { AnimatedBackground } from '@/components/AnimatedBackground'
+import { EnhancedAnimatedBackground } from '@/components/EnhancedAnimatedBackground'
 import { GenieInterface } from '@/components/GenieInterface'
-import { PersonaDashboard } from '@/components/PersonaDashboard'
+import { EnhancedPersonaDashboard } from '@/components/EnhancedPersonaDashboard'
 import { MagicUIStudio } from '@/components/MagicUIStudio'
 import { AttachmentIntegration } from '@/components/AttachmentIntegration'
 import { Footer } from '@/components/Footer'
 import { NotificationProvider } from '@/components/NotificationProvider'
+import { ParallaxSection } from '@/components/ParallaxSection'
 
 export default function Home() {
   const [mounted, setMounted] = useState(false)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
     setMounted(true)
+
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY })
+    }
+
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
   if (!mounted) {
-    return null
+    return (
+      <div className="min-h-screen bg-bg-dark flex items-center justify-center">
+        <motion.div
+          className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+        />
+      </div>
+    )
   }
 
   return (
-    <NotificationProvider>
-      <main className="min-h-screen bg-bg-dark text-text-primary overflow-x-hidden">
-        <AnimatedBackground />
-        <Navigation />
-        
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8">
-          <Hero />
-          <TabSection />
-          <GenieInterface />
-          <PersonaDashboard />
-          <MagicUIStudio />
-          <AttachmentIntegration />
+    <SmoothScrollProvider>
+      <NotificationProvider>
+        <div className="relative min-h-screen bg-bg-dark text-text-primary overflow-x-hidden">
+          {/* Enhanced Animated Background */}
+          <EnhancedAnimatedBackground />
+
+          {/* Cursor Follow Effect */}
+          <motion.div
+            className="fixed w-6 h-6 bg-primary/20 rounded-full pointer-events-none z-50 mix-blend-difference"
+            animate={{
+              x: mousePosition.x - 12,
+              y: mousePosition.y - 12,
+            }}
+            transition={{
+              type: "spring",
+              stiffness: 500,
+              damping: 28,
+            }}
+          />
+
+          {/* Navigation */}
+          <Navigation />
+          
+          {/* Hero Section */}
+          <EnhancedHero />
+
+          {/* Content Sections with Parallax */}
+          <ParallaxSection className="relative z-10" speed={0.5}>
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+              {/* Tab Section */}
+              <motion.div
+                initial={{ opacity: 0, y: 100 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-10%' }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                <TabSection />
+              </motion.div>
+
+              {/* Genie Interface */}
+              <ParallaxSection className="py-20" speed={0.3} direction="up">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true, margin: '-10%' }}
+                  transition={{ duration: 0.8, delay: 0.1 }}
+                >
+                  <GenieInterface />
+                </motion.div>
+              </ParallaxSection>
+
+              {/* Enhanced Persona Dashboard */}
+              <EnhancedPersonaDashboard />
+
+              {/* Magic UI Studio */}
+              <ParallaxSection className="py-20" speed={0.4} direction="left">
+                <motion.div
+                  initial={{ opacity: 0, x: 100 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: '-10%' }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                >
+                  <MagicUIStudio />
+                </motion.div>
+              </ParallaxSection>
+
+              {/* Attachment Integration */}
+              <ParallaxSection className="py-20" speed={0.6} direction="right">
+                <motion.div
+                  initial={{ opacity: 0, x: -100 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: '-10%' }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
+                >
+                  <AttachmentIntegration />
+                </motion.div>
+              </ParallaxSection>
+            </div>
+          </ParallaxSection>
+          
+          {/* Footer */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <Footer />
+          </motion.div>
+
+          {/* Floating Action Elements */}
+          <div className="fixed bottom-20 right-8 z-40">
+            <motion.div
+              className="flex flex-col space-y-4"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 2, duration: 0.5 }}
+            >
+              {/* Magic Wand */}
+              <motion.button
+                className="w-14 h-14 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-lg flex items-center justify-center text-2xl"
+                whileHover={{ scale: 1.1, rotate: 15 }}
+                whileTap={{ scale: 0.9 }}
+                animate={{
+                  boxShadow: [
+                    '0 0 20px rgba(168, 85, 247, 0.4)',
+                    '0 0 40px rgba(168, 85, 247, 0.8)',
+                    '0 0 20px rgba(168, 85, 247, 0.4)',
+                  ]
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+                onClick={() => {
+                  // Add magic effect
+                  const sparkles = document.createElement('div')
+                  sparkles.className = 'fixed inset-0 pointer-events-none z-50'
+                  sparkles.innerHTML = Array.from({ length: 20 }).map(() => 
+                    `<div class="absolute w-2 h-2 bg-yellow-400 rounded-full animate-ping" style="left: ${Math.random() * 100}%; top: ${Math.random() * 100}%; animation-delay: ${Math.random() * 2}s;"></div>`
+                  ).join('')
+                  document.body.appendChild(sparkles)
+                  setTimeout(() => document.body.removeChild(sparkles), 3000)
+                }}
+              >
+                🪄
+              </motion.button>
+
+              {/* Settings */}
+              <motion.button
+                className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center text-xl border border-white/20"
+                whileHover={{ scale: 1.1, rotate: 180 }}
+                whileTap={{ scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+              >
+                ⚙️
+              </motion.button>
+            </motion.div>
+          </div>
+
+          {/* Progress Indicator */}
+          <motion.div
+            className="fixed top-0 left-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent z-50"
+            style={{
+              transformOrigin: '0%',
+            }}
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 2, ease: 'easeInOut' }}
+          />
         </div>
-        
-        <Footer />
-      </main>
-    </NotificationProvider>
+      </NotificationProvider>
+    </SmoothScrollProvider>
   )
 }
