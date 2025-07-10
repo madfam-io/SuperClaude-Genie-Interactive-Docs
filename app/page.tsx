@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { SmoothScrollProvider } from '@/components/SmoothScrollProvider'
-import { Navigation } from '@/components/Navigation'
-import { EnhancedHero } from '@/components/EnhancedHero'
+import { PremiumNavigation } from '@/components/PremiumNavigation'
+import { PremiumHero } from '@/components/PremiumHero'
 import { TabSection } from '@/components/TabSection'
 import { EnhancedAnimatedBackground } from '@/components/EnhancedAnimatedBackground'
-import { GenieInterface } from '@/components/GenieInterface'
-import { EnhancedPersonaDashboard } from '@/components/EnhancedPersonaDashboard'
+import { PremiumGenieInterface } from '@/components/PremiumGenieInterface'
+import { PremiumPersonaDashboard } from '@/components/PremiumPersonaDashboard'
 import { MagicUIStudio } from '@/components/MagicUIStudio'
 import { AttachmentIntegration } from '@/components/AttachmentIntegration'
 import { GlassmorphismShowcase } from '@/components/GlassmorphismShowcase'
@@ -80,10 +80,10 @@ export default function Home() {
           />
 
           {/* Navigation */}
-          <Navigation />
+          <PremiumNavigation />
           
           {/* Hero Section */}
-          <EnhancedHero />
+          <PremiumHero />
 
           {/* Content Sections with Parallax */}
           <ParallaxSection className="relative z-10" speed={0.5}>
@@ -106,12 +106,12 @@ export default function Home() {
                   viewport={{ once: true, margin: '-10%' }}
                   transition={{ duration: 0.8, delay: 0.1 }}
                 >
-                  <GenieInterface />
+                  <PremiumGenieInterface />
                 </motion.div>
               </ParallaxSection>
 
               {/* Enhanced Persona Dashboard */}
-              <EnhancedPersonaDashboard />
+              <PremiumPersonaDashboard />
 
               {/* Magic UI Studio */}
               <ParallaxSection className="py-20" speed={0.4} direction="left">
