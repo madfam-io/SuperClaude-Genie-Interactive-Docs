@@ -17,34 +17,49 @@ import {
   FileText
 } from 'lucide-react'
 
-// Monaco Editor dynamic import with error handling
-const Editor = dynamic(
-  () => import('@monaco-editor/react').catch(() => {
-    // Fallback component if Monaco Editor fails to load
-    return Promise.resolve({ 
-      default: () => (
-        <div className="h-full bg-background-secondary rounded-lg border border-neon-blue/20 flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <div className="text-6xl">⚠️</div>
-            <div className="text-text-primary text-lg">Monaco Editor Unavailable</div>
-            <div className="text-text-secondary text-sm">Advanced code editor features are temporarily disabled</div>
-          </div>
-        </div>
-      )
-    })
-  }),
-  { 
-    ssr: false,
-    loading: () => (
-      <div className="h-full bg-background-secondary rounded-lg border border-neon-blue/20 flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="w-8 h-8 border-2 border-neon-blue border-t-transparent rounded-full animate-spin mx-auto" />
-          <div className="text-text-secondary text-sm">Loading Monaco Editor...</div>
-        </div>
-      </div>
-    )
+// Simple text editor component as fallback
+interface SimpleEditorProps {
+  language?: string
+  theme?: string
+  value?: string
+  onChange?: (value: string | undefined) => void
+  onMount?: (editor: any, monaco: any) => void
+  options?: any
+}
+
+const SimpleEditor = ({ 
+  value = '', 
+  onChange, 
+  language = 'typescript',
+  options = {}
+}: SimpleEditorProps) => {
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onChange?.(e.target.value)
   }
-)
+
+  return (
+    <div className="h-full flex flex-col">
+      <div className="flex-shrink-0 px-4 py-2 bg-background-tertiary border-b border-neon-blue/10 text-sm text-text-muted">
+        Simple Text Editor - {language.toUpperCase()}
+      </div>
+      <textarea
+        value={value}
+        onChange={handleChange}
+        className="flex-1 w-full p-4 bg-background-secondary text-text-primary font-mono text-sm resize-none border-none outline-none"
+        placeholder={`Enter your ${language} code here...`}
+        style={{
+          fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+          lineHeight: '1.5',
+          tabSize: 2
+        }}
+        spellCheck={false}
+      />
+    </div>
+  )
+}
+
+// Use simple editor as the main component for now
+const Editor = SimpleEditor
 
 interface MonacoEditorProps {
   language?: string
@@ -61,60 +76,27 @@ interface MonacoEditorProps {
   showToolbar?: boolean
 }
 
-// Cyberpunk Monaco themes
-const cyberpunkThemes = {
+// Theme configurations for simple editor (visual styling only)
+const editorThemes = {
   'cyberpunk-dark': {
-    base: 'vs-dark',
-    inherit: true,
-    rules: [
-      { token: 'comment', foreground: '#6a9955', fontStyle: 'italic' },
-      { token: 'keyword', foreground: '#00d4ff', fontStyle: 'bold' },
-      { token: 'string', foreground: '#22c55e' },
-      { token: 'number', foreground: '#ff8c00' },
-      { token: 'type', foreground: '#a855f7' },
-      { token: 'function', foreground: '#f472b6' },
-      { token: 'variable', foreground: '#ffffff' },
-      { token: 'operator', foreground: '#00d4ff' },
-      { token: 'delimiter', foreground: '#ffffff' },
-    ],
-    colors: {
-      'editor.background': '#000000',
-      'editor.foreground': '#ffffff',
-      'editor.lineHighlightBackground': '#00d4ff0a',
-      'editor.selectionBackground': '#00d4ff33',
-      'editor.inactiveSelectionBackground': '#00d4ff1a',
-      'editorCursor.foreground': '#00d4ff',
-      'editorWhitespace.foreground': '#404040',
-      'editorLineNumber.foreground': '#707070',
-      'editorLineNumber.activeForeground': '#00d4ff',
-      'editor.border': '#262626',
-      'scrollbar.shadow': '#000000',
-      'scrollbarSlider.background': '#404040',
-      'scrollbarSlider.hoverBackground': '#525252',
-      'scrollbarSlider.activeBackground': '#00d4ff',
-    }
+    background: 'bg-black',
+    text: 'text-neon-blue',
+    accent: 'border-neon-blue/20'
   },
   'neon-minimal': {
-    base: 'vs-dark',
-    inherit: true,
-    rules: [
-      { token: 'comment', foreground: '#a1a1a1', fontStyle: 'italic' },
-      { token: 'keyword', foreground: '#a855f7', fontStyle: 'bold' },
-      { token: 'string', foreground: '#10b981' },
-      { token: 'number', foreground: '#f59e0b' },
-      { token: 'type', foreground: '#0070f3' },
-      { token: 'function', foreground: '#7c3aed' },
-      { token: 'variable', foreground: '#ffffff' },
-    ],
-    colors: {
-      'editor.background': '#0a0a0a',
-      'editor.foreground': '#ffffff',
-      'editor.lineHighlightBackground': '#a855f70a',
-      'editor.selectionBackground': '#a855f733',
-      'editorCursor.foreground': '#a855f7',
-      'editorLineNumber.foreground': '#707070',
-      'editorLineNumber.activeForeground': '#a855f7',
-    }
+    background: 'bg-background-secondary',
+    text: 'text-neon-purple', 
+    accent: 'border-neon-purple/20'
+  },
+  'terminal-green': {
+    background: 'bg-black',
+    text: 'text-neon-green',
+    accent: 'border-neon-green/20'
+  },
+  'matrix-code': {
+    background: 'bg-black',
+    text: 'text-neon-green',
+    accent: 'border-neon-green/20'
   }
 }
 
@@ -138,39 +120,11 @@ export default function MonacoEditor({
   const [monaco, setMonaco] = useState<any>(null)
   const editorRef = useRef<any>(null)
 
-  // Monaco editor setup
+  // Simple editor setup (no Monaco-specific features)
   const handleEditorDidMount = (editor: any, monacoInstance: any) => {
+    // Simple editor doesn't need Monaco setup
     editorRef.current = editor
     setMonaco(monacoInstance)
-    
-    // Define custom cyberpunk themes
-    Object.entries(cyberpunkThemes).forEach(([themeName, themeData]) => {
-      monacoInstance.editor.defineTheme(themeName, themeData)
-    })
-    
-    // Set theme
-    monacoInstance.editor.setTheme(theme)
-    
-    // Custom keyboard shortcuts
-    editor.addCommand(monacoInstance.KeyMod.CtrlCmd | monacoInstance.KeyCode.Enter, () => {
-      if (onRun) {
-        handleRunCode()
-      }
-    })
-    
-    // Auto-completion and IntelliSense enhancements
-    monacoInstance.languages.typescript.typescriptDefaults.setCompilerOptions({
-      target: monacoInstance.languages.typescript.ScriptTarget.ES2020,
-      allowNonTsExtensions: true,
-      moduleResolution: monacoInstance.languages.typescript.ModuleResolutionKind.NodeJs,
-      module: monacoInstance.languages.typescript.ModuleKind.CommonJS,
-      noEmit: true,
-      esModuleInterop: true,
-      jsx: monacoInstance.languages.typescript.JsxEmit.React,
-      reactNamespace: 'React',
-      allowJs: true,
-      typeRoots: ['node_modules/@types']
-    })
   }
 
   const handleEditorChange = (newValue: string | undefined) => {
@@ -330,46 +284,7 @@ export default function MonacoEditor({
           onChange={handleEditorChange}
           onMount={handleEditorDidMount}
           options={{
-            readOnly,
-            minimap: { enabled: minimap },
-            lineNumbers: lineNumbers ? 'on' : 'off',
-            wordWrap: wordWrap ? 'on' : 'off',
-            automaticLayout: true,
-            fontSize: 14,
-            fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-            fontLigatures: true,
-            cursorBlinking: 'smooth',
-            cursorSmoothCaretAnimation: 'on',
-            smoothScrolling: true,
-            scrollBeyondLastLine: false,
-            renderWhitespace: 'selection',
-            bracketPairColorization: { enabled: true },
-            guides: {
-              bracketPairs: true,
-              indentation: true,
-            },
-            suggest: {
-              showIcons: true,
-              showSnippets: true,
-              showWords: true,
-              showColors: true,
-              showFiles: true,
-              showReferences: true,
-              showFolders: true,
-              showTypeParameters: true,
-              showIssues: true,
-              showUsers: true,
-              showValues: true,
-            },
-            quickSuggestions: {
-              other: true,
-              comments: true,
-              strings: true,
-            },
-            tabCompletion: 'on',
-            acceptSuggestionOnCommitCharacter: true,
-            acceptSuggestionOnEnter: 'on',
-            accessibilitySupport: 'auto',
+            readOnly
           }}
         />
         
