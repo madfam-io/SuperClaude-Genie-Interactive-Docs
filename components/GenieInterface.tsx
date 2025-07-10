@@ -1,23 +1,66 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card } from './ui/card'
 import { CodeBlock } from './ui/CodeBlock'
 import { useNotification } from './NotificationProvider'
+import { useSupeClaudeAPI } from '@/lib/api-client'
+import { GenerateCommandsRequest, PersonaContext } from '@/lib/types'
 
 export function GenieInterface() {
   const [request, setRequest] = useState('')
   const [selectedTech, setSelectedTech] = useState<string[]>([])
   const [phase, setPhase] = useState('development')
+  const [selectedPersona, setSelectedPersona] = useState('architect')
   const [commands, setCommands] = useState<string[]>([])
+  const [streamingText, setStreamingText] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
+  const [personas, setPersonas] = useState<PersonaContext[]>([])
+  const [sessionId, setSessionId] = useState<string | null>(null)
 
   const { showNotification } = useNotification()
+  const api = useSupeClaudeAPI()
 
   const techStack = [
     'react', 'vue', 'node', 'typescript', 'express', 
-    'next', 'docker', 'postgres', 'graphql', 'tailwind'
+    'next', 'docker', 'postgres', 'graphql', 'tailwind',
+    'python', 'django', 'fastapi', 'redis', 'mongodb',
+    'kubernetes', 'aws', 'azure', 'gcp', 'vercel'
   ]
+
+  // Initialize session and load personas
+  useEffect(() => {
+    const initializeAPI = async () => {
+      try {
+        // Initialize session
+        const session = await api.initializeSession({
+          techStack: selectedTech,
+          projectPhase: phase
+        })
+        setSessionId(session.id)
+
+        // Load available personas
+        const availablePersonas = await api.client.getPersonas()
+        setPersonas(availablePersonas)
+      } catch (error) {
+        console.error('Failed to initialize API:', error)
+        showNotification('Failed to connect to SuperClaude API', 'error')
+      }
+    }
+
+    initializeAPI()
+  }, [api, selectedTech, phase, showNotification])
+
+  // Update session context when tech stack or phase changes
+  useEffect(() => {
+    if (sessionId) {
+      api.client.updateContext({
+        techStack: selectedTech,
+        projectPhase: phase,
+        lastRequest: request
+      })
+    }
+  }, [selectedTech, phase, sessionId, request, api.client])
 
   const toggleTech = (tech: string) => {
     setSelectedTech(prev => 
@@ -34,42 +77,68 @@ export function GenieInterface() {
     }
 
     setIsGenerating(true)
+    setCommands([])
+    setStreamingText('')
 
-    // Simulate AI generation delay
-    await new Promise(resolve => setTimeout(resolve, 2000))
-
-    // Simple command generation based on keywords
-    const generatedCommands: string[] = []
-    const requestLower = request.toLowerCase()
-
-    if (requestLower.includes('build') || requestLower.includes('create')) {
-      generatedCommands.push('/build --feature --complete --persona-frontend --magic')
-    }
-    if (requestLower.includes('performance') || requestLower.includes('slow')) {
-      generatedCommands.push('/analyze --performance --profile --persona-performance --seq')
-      generatedCommands.push('/improve --performance --optimization --uc')
-    }
-    if (requestLower.includes('test')) {
-      generatedCommands.push('/test --comprehensive --coverage --persona-qa')
-    }
-    if (requestLower.includes('deploy')) {
-      generatedCommands.push('/deploy --production --verify --persona-architect')
-    }
-
-    // Add tech-specific flags
-    selectedTech.forEach(tech => {
-      if (generatedCommands.length > 0) {
-        generatedCommands[0] += ` --${tech}`
+    try {
+      const generateRequest: GenerateCommandsRequest = {
+        prompt: request.trim(),
+        techStack: selectedTech,
+        projectPhase: phase,
+        persona: selectedPersona as any,
+        sessionId: sessionId || undefined,
+        maxCommands: 4
       }
-    })
 
-    if (generatedCommands.length === 0) {
-      generatedCommands.push('/analyze --project --comprehensive --persona-architect')
+      // Use streaming for real-time feedback
+      let fullResponse = ''
+      await api.generateCommandsStream(
+        generateRequest,
+        (chunk: string) => {
+          fullResponse += chunk
+          setStreamingText(fullResponse)
+        },
+        () => {
+          // Parse the completed response for commands
+          const commandMatches = fullResponse.match(/```bash\n([^`]+)```/g)
+          if (commandMatches) {
+            const extractedCommands = commandMatches.map(match => 
+              match.replace(/```bash\n|```/g, '').trim()
+            )
+            setCommands(extractedCommands)
+          } else {
+            // Fallback: look for lines starting with /
+            const lines = fullResponse.split('\n')
+            const commandLines = lines.filter(line => 
+              line.trim().startsWith('/') && line.includes('--')
+            )
+            if (commandLines.length > 0) {
+              setCommands(commandLines)
+            }
+          }
+          
+          setIsGenerating(false)
+          setStreamingText('')
+          showNotification('Commands generated successfully!', 'success')
+        },
+        (error: Error) => {
+          console.error('Command generation error:', error)
+          setIsGenerating(false)
+          setStreamingText('')
+          
+          if (api.isAPIError(error)) {
+            showNotification(`API Error: ${error.message}`, 'error')
+          } else {
+            showNotification('Failed to generate commands. Please try again.', 'error')
+          }
+        }
+      )
+    } catch (error) {
+      console.error('Command generation error:', error)
+      setIsGenerating(false)
+      setStreamingText('')
+      showNotification('Failed to generate commands. Please try again.', 'error')
     }
-
-    setCommands(generatedCommands)
-    setIsGenerating(false)
-    showNotification('Commands generated successfully!', 'success')
   }
 
   return (
@@ -132,6 +201,28 @@ export function GenieInterface() {
             </select>
           </div>
 
+          <div>
+            <label className="block text-text-primary font-medium mb-2">
+              AI Persona:
+            </label>
+            <select
+              value={selectedPersona}
+              onChange={(e) => setSelectedPersona(e.target.value)}
+              className="w-full px-4 py-3 bg-bg-light border border-white/10 rounded-lg text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+            >
+              {personas.map(persona => (
+                <option key={persona.id} value={persona.id}>
+                  {persona.name} - {persona.expertise.slice(0, 50)}...
+                </option>
+              ))}
+            </select>
+            {personas.find(p => p.id === selectedPersona) && (
+              <p className="text-sm text-text-muted mt-1">
+                {personas.find(p => p.id === selectedPersona)?.description}
+              </p>
+            )}
+          </div>
+
           <button
             onClick={generateCommands}
             disabled={isGenerating}
@@ -150,12 +241,36 @@ export function GenieInterface() {
 
         <div>
           <h4 className="text-xl font-semibold text-primary mb-4">🎯 Your SuperClaude Magic</h4>
+          
+          {/* Streaming Response Display */}
+          {isGenerating && streamingText && (
+            <div className="mb-4 p-4 bg-bg-dark rounded-lg border border-primary/20">
+              <div className="flex items-center mb-2">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary mr-2"></div>
+                <span className="text-sm text-primary">AI is thinking...</span>
+              </div>
+              <div className="text-sm text-text-secondary whitespace-pre-wrap">
+                {streamingText}
+              </div>
+            </div>
+          )}
+          
+          {/* Generated Commands */}
           {commands.length > 0 ? (
             <div className="space-y-4">
               {commands.map((command, index) => (
                 <div key={index} className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-text-secondary text-sm">Step {index + 1}</span>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(command)
+                        showNotification('Command copied to clipboard!', 'success')
+                      }}
+                      className="text-xs px-2 py-1 bg-primary/20 text-primary rounded hover:bg-primary/30 transition-colors"
+                    >
+                      Copy
+                    </button>
                   </div>
                   <CodeBlock 
                     code={command}
@@ -164,13 +279,44 @@ export function GenieInterface() {
                   />
                 </div>
               ))}
+              
+              {/* Additional Actions */}
+              <div className="pt-4 border-t border-white/10">
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => {
+                      const allCommands = commands.join('\n')
+                      navigator.clipboard.writeText(allCommands)
+                      showNotification('All commands copied!', 'success')
+                    }}
+                    className="px-3 py-1 text-sm bg-primary/20 text-primary rounded hover:bg-primary/30 transition-colors"
+                  >
+                    📋 Copy All
+                  </button>
+                  <button
+                    onClick={() => {
+                      setCommands([])
+                      setRequest('')
+                      showNotification('Interface reset', 'info')
+                    }}
+                    className="px-3 py-1 text-sm bg-red-500/20 text-red-400 rounded hover:bg-red-500/30 transition-colors"
+                  >
+                    🔄 Reset
+                  </button>
+                </div>
+              </div>
             </div>
           ) : (
             <div className="bg-bg-dark rounded-lg p-8 text-center">
               <div className="text-4xl mb-4">🧞</div>
-              <p className="text-text-muted">
+              <p className="text-text-muted mb-2">
                 Describe your development needs above, and I'll generate the perfect SuperClaude commands for you!
               </p>
+              {sessionId && (
+                <p className="text-xs text-text-muted opacity-70">
+                  Session: {sessionId.slice(0, 8)}...
+                </p>
+              )}
             </div>
           )}
         </div>
