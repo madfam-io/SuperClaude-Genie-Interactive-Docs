@@ -1190,5 +1190,402 @@
             });
         });
     </script>
+    
+    <!-- Enhanced WebApp Styles -->
+    <link rel="stylesheet" href="src/styles/enhanced-webapp.css">
+    
+    <!-- Enhanced WebApp JavaScript -->
+    <script src="src/enhanced-app.js"></script>
+    
+    <!-- Tab Switching for Magic UI Preview -->
+    <script>
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('tab-btn')) {
+                const targetTab = e.target.dataset.tab;
+                const tabContainer = e.target.closest('.ui-preview');
+                
+                // Update tab buttons
+                tabContainer.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                e.target.classList.add('active');
+                
+                // Update tab content
+                tabContainer.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                tabContainer.querySelector(`#${targetTab}-tab`).classList.add('active');
+            }
+            
+            // Magic UI generation handler
+            if (e.target.id === 'generate-ui') {
+                const componentType = document.getElementById('component-type')?.value || 'button';
+                const framework = document.getElementById('ui-framework')?.value || 'vue';
+                const description = document.getElementById('ui-description')?.value || '';
+                
+                generateMagicUIComponent(componentType, framework, description);
+            }
+        });
+        
+        async function generateMagicUIComponent(type, framework, description) {
+            try {
+                console.log('🪄 Generating Magic UI component:', { type, framework, description });
+                
+                // Simulate Magic MCP integration
+                const component = await generateComponentCode(type, framework, description);
+                
+                // Update code display
+                const codeElement = document.getElementById('generated-code');
+                if (codeElement) {
+                    codeElement.textContent = component.code;
+                }
+                
+                // Update preview
+                updateComponentPreview(component, framework);
+                
+                // Show notification
+                showTemporaryNotification('✨ Magic UI component generated!', 'success');
+                
+            } catch (error) {
+                console.error('Magic UI generation failed:', error);
+                showTemporaryNotification('❌ Component generation failed', 'error');
+            }
+        }
+        
+        async function generateComponentCode(type, framework, description) {
+            // Simulate API call to Magic MCP
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const templates = {
+                vue: {
+                    button: `<template>
+  <button 
+    class="magic-button" 
+    :class="variant"
+    @click="handleClick"
+    :disabled="disabled"
+  >
+    <slot>{{ text }}</slot>
+  </button>
+</template>
+
+<script>
+export default {
+  name: 'MagicButton',
+  props: {
+    text: {
+      type: String,
+      default: 'Click me'
+    },
+    variant: {
+      type: String,
+      default: 'primary'
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  },
+  methods: {
+    handleClick() {
+      this.$emit('click');
+    }
+  }
+}
+</script>
+
+<style scoped>
+.magic-button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+}
+
+.magic-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+</style>`,
+                    card: `<template>
+  <div class="magic-card" :class="variant">
+    <div v-if="hasHeader" class="card-header">
+      <h3 v-if="title">{{ title }}</h3>
+      <slot name="header"></slot>
+    </div>
+    <div class="card-body">
+      <slot></slot>
+    </div>
+    <div v-if="hasFooter" class="card-footer">
+      <slot name="footer"></slot>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'MagicCard',
+  props: {
+    title: String,
+    variant: {
+      type: String,
+      default: 'default'
+    }
+  },
+  computed: {
+    hasHeader() {
+      return this.title || this.$slots.header;
+    },
+    hasFooter() {
+      return this.$slots.footer;
+    }
+  }
+}
+</script>
+
+<style scoped>
+.magic-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.magic-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.card-header {
+  padding: 1.5rem 1.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-header h3 {
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.card-footer {
+  padding: 0 1.5rem 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+</style>`
+                },
+                react: {
+                    button: `import React from 'react';
+import './MagicButton.css';
+
+const MagicButton = ({ 
+  text = 'Click me', 
+  variant = 'primary', 
+  disabled = false, 
+  onClick, 
+  children 
+}) => {
+  return (
+    <button 
+      className={\`magic-button \${variant}\`}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {children || text}
+    </button>
+  );
+};
+
+export default MagicButton;`,
+                    card: `import React from 'react';
+import './MagicCard.css';
+
+const MagicCard = ({ 
+  title, 
+  variant = 'default', 
+  header, 
+  footer, 
+  children 
+}) => {
+  return (
+    <div className={\`magic-card \${variant}\`}>
+      {(title || header) && (
+        <div className="card-header">
+          {title && <h3>{title}</h3>}
+          {header}
+        </div>
+      )}
+      <div className="card-body">
+        {children}
+      </div>
+      {footer && (
+        <div className="card-footer">
+          {footer}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default MagicCard;`
+                }
+            };
+            
+            const template = templates[framework]?.[type] || templates.vue.button;
+            
+            return {
+                code: template,
+                framework,
+                type,
+                description
+            };
+        }
+        
+        function updateComponentPreview(component, framework) {
+            const previewFrame = document.getElementById('preview-frame');
+            if (!previewFrame) return;
+            
+            let previewHTML = '';
+            
+            if (framework === 'vue') {
+                previewHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Component Preview</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --bg-dark: #0f172a;
+            --bg-card: #334155;
+            --text-primary: #f1f5f9;
+        }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            padding: 20px; 
+            background: var(--bg-dark);
+            color: var(--text-primary);
+        }
+        ${extractStylesFromVueComponent(component.code)}
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        const { createApp } = Vue;
+        
+        ${extractScriptFromVueComponent(component.code)}
+        
+        createApp({
+            components: {
+                MagicButton: MagicButtonComponent,
+                MagicCard: MagicCardComponent
+            },
+            template: \`${extractTemplateFromVueComponent(component.code)}\`,
+            data() {
+                return {
+                    message: 'Hello from Magic UI!'
+                };
+            },
+            methods: {
+                handleClick() {
+                    alert('Magic button clicked!');
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>`;
+            } else if (framework === 'react') {
+                previewHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Component Preview</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id="app"></div>
+    <script type="text/babel">
+        ${component.code}
+        
+        const App = () => {
+            return (
+                <div style={{ padding: '20px' }}>
+                    <MagicButton 
+                        text="Magic Button" 
+                        onClick={() => alert('Magic button clicked!')}
+                    />
+                </div>
+            );
+        };
+        
+        ReactDOM.render(<App />, document.getElementById('app'));
+    </script>
+</body>
+</html>`;
+            }
+            
+            previewFrame.srcdoc = previewHTML;
+        }
+        
+        function extractTemplateFromVueComponent(code) {
+            const templateMatch = code.match(/<template>([\s\S]*?)<\/template>/);
+            return templateMatch ? templateMatch[1].trim() : '<div>Component</div>';
+        }
+        
+        function extractStylesFromVueComponent(code) {
+            const styleMatch = code.match(/<style[^>]*>([\s\S]*?)<\/style>/);
+            return styleMatch ? styleMatch[1] : '';
+        }
+        
+        function extractScriptFromVueComponent(code) {
+            const scriptMatch = code.match(/<script>([\s\S]*?)<\/script>/);
+            if (scriptMatch) {
+                const scriptContent = scriptMatch[1];
+                // Convert Vue component export to a standalone component object
+                return scriptContent.replace('export default', 'const MagicButtonComponent = ').replace('const MagicCardComponent = ', 'const MagicCardComponent = ') + ';';
+            }
+            return 'const MagicButtonComponent = {}; const MagicCardComponent = {};';
+        }
+        
+        function showTemporaryNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type} show`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
