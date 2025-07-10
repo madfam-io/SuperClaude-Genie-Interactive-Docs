@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperClaude Genie - Interactive Docs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --bg-dark: #0f172a;
+            --bg-light: #1e293b;
+            --bg-card: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(236, 72, 153, 0.05) 0%, transparent 50%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 6rem 2rem 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--bg-light);
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--bg-card) var(--bg-light);
+        }
+
+        .tab {
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+        }
+
+        .tab.active {
+            color: var(--primary);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-light);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+        }
+
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Command Card */
+        .command-card {
+            background: var(--bg-card);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .command-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-1);
+        }
+
+        .command-card h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .command-card p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: var(--bg-dark);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            color: var(--text-primary);
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        /* Feature Cards */
+        .feature-card {
+            background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-card) 100%);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Search Box */
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1rem;
+            background: var(--bg-light);
+            border: 2px solid var(--bg-card);
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* Interactive Demo */
+        .demo-container {
+            background: var(--bg-light);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .demo-input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-dark);
+            border: 2px solid var(--bg-card);
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .demo-output {
+            background: var(--bg-dark);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            min-height: 200px;
+            color: var(--text-primary);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-light);
+            padding: 3rem 0;
+            margin-top: 4rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* Tooltips */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+            text-align: center;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Persona Badges */
+        .persona-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--gradient-2);
+            color: white;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        /* Command Syntax Highlighting */
+        .command-syntax {
+            font-family: 'Fira Code', monospace;
+        }
+
+        .command-name {
+            color: #4ade80;
+        }
+
+        .command-flag {
+            color: #60a5fa;
+        }
+
+        .command-persona {
+            color: #f472b6;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .quick-action-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+        }
+
+        .quick-action-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                🧞 SuperClaude Genie
+            </div>
+            <ul class="nav-links">
+                <li><a href="#getting-started">Getting Started</a></li>
+                <li><a href="#commands">Commands</a></li>
+                <li><a href="#workflows">Workflows</a></li>
+                <li><a href="#examples">Examples</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section class="hero">
+            <h1>🧞 SuperClaude Genie</h1>
+            <p>Transform your AI into a SuperClaude command generator wizard</p>
+            <div class="cta-buttons">
+                <button class="btn btn-primary" onclick="scrollToSection('getting-started')">Get Started</button>
+                <button class="btn btn-secondary" onclick="scrollToSection('demo')">Try Demo</button>
+            </div>
+        </section>
+
+        <div class="search-container">
+            <input type="text" class="search-box" placeholder="Search commands, personas, or workflows..." onkeyup="searchContent(this.value)">
+            <span class="search-icon">🔍</span>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('overview')">Overview</button>
+            <button class="tab" onclick="showTab('commands')">Commands</button>
+            <button class="tab" onclick="showTab('personas')">Personas</button>
+            <button class="tab" onclick="showTab('workflows')">Workflows</button>
+            <button class="tab" onclick="showTab('scenarios')">Common Scenarios</button>
+            <button class="tab" onclick="showTab('enterprise')">Enterprise</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="overview" class="content-section active">
+            <div class="card">
+                <h3>🚀 What is SuperClaude Genie?</h3>
+                <p>SuperClaude Genie is an AI assistant prompt that transforms any AI into an expert SuperClaude command generator. It knows all 19 commands, 9 personas, and every flag combination to help you build, debug, and scale any codebase.</p>
+                
+                <div class="grid" style="margin-top: 2rem;">
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Instant Commands</h3>
+                        <p>Get ready-to-use SuperClaude commands for any development task</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3>Perfect Personas</h3>
+                        <p>Automatically selects the right persona for maximum effectiveness</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔗</div>
+                        <h3>Smart Workflows</h3>
+                        <p>Chains multiple commands for complex development workflows</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" id="getting-started">
+                <h3>🎯 Quick Start</h3>
+                <ol style="line-height: 2; color: var(--text-secondary);">
+                    <li>Copy the SuperClaude Genie prompt</li>
+                    <li>Paste into Claude, ChatGPT, or any AI assistant</li>
+                    <li>Describe your project and needs</li>
+                    <li>Receive optimized SuperClaude commands</li>
+                    <li>Copy-paste into your CLI and watch the magic! ✨</li>
+                </ol>
+                
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyPrompt()">Copy Prompt</button>
+                    <pre>You are SuperClaude Genie 🧞, an expert assistant specialized in generating precise SuperClaude commands...</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Commands Tab -->
+        <div id="commands" class="content-section">
+            <div class="card">
+                <h3>⚡ Development Commands</h3>
+                
+                <div class="command-card">
+                    <h4><span class="command-syntax"><span class="command-name">/build</span></span> - Create Code & Features</h4>
+                    <p>Generate complete code implementations with best practices</p>
+                    <div class="code-block">
+                        <pre><span class="command-name">/build</span> <span class="command-flag">--react</span> <span class="command-flag">--typescript</span> <span class="command-persona">--persona-frontend</span></pre>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <h4><span class="command-syntax"><span class="command-name">/dev-setup</span></span> - Environment Setup</h4>
+                    <p>Configure development environments and tooling</p>
+                    <div class="code-block">
+                        <pre><span class="command-name">/dev-setup</span> <span class="command-flag">--docker</span> <span class="command-flag">--postgres</span> <span class="command-persona">--persona-backend</span></pre>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <h4><span class="command-syntax"><span class="command-name">/troubleshoot</span></span> - Debug Issues</h4>
+                    <p>Analyze and fix bugs with intelligent debugging</p>
+                    <div class="code-block">
+                        <pre><span class="command-name">/troubleshoot</span> <span class="command-flag">--memory-leak</span> <span class="command-flag">--profile</span> <span class="command-persona">--persona-analyzer</span></pre>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <h4><span class="command-syntax"><span class="command-name">/improve</span></span> - Optimize Code</h4>
+                    <p>Enhance performance and code quality</p>
+                    <div class="code-block">
+                        <pre><span class="command-name">/improve</span> <span class="command-flag">--performance</span> <span class="command-flag">--refactor</span> <span class="command-persona">--persona-performance</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🛠️ Operations Commands</h3>
+                
+                <div class="command-card">
+                    <h4><span class="command-syntax"><span class="command-name">/deploy</span></span> - Deployment Magic</h4>
+                    <p>Handle deployments across any platform</p>
+                    <div class="code-block">
+                        <pre><span class="command-name">/deploy</span> <span class="command-flag">--kubernetes</span> <span class="command-flag">--zero-downtime</span> <span class="command-persona">--persona-architect</span></pre>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <h4><span class="command-syntax"><span class="command-name">/scan</span></span> - Security Analysis</h4>
+                    <p>Comprehensive security audits and fixes</p>
+                    <div class="code-block">
+                        <pre><span class="command-name">/scan</span> <span class="command-flag">--vulnerabilities</span> <span class="command-flag">--fix</span> <span class="command-persona">--persona-security</span></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Personas Tab -->
+        <div id="personas" class="content-section">
+            <div class="card">
+                <h3>🎭 The 9 SuperClaude Personas</h3>
+                <p>Each persona brings specialized expertise to your commands:</p>
+                
+                <div class="grid" style="margin-top: 2rem;">
+                    <div class="command-card">
+                        <h4>🏗️ Architect</h4>
+                        <span class="persona-badge">--persona-architect</span>
+                        <p>System design, scalability, infrastructure decisions</p>
+                        <div class="code-block">
+                            <pre><span class="command-name">/design</span> <span class="command-flag">--microservices</span> <span class="command-persona">--persona-architect</span></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card">
+                        <h4>🎨 Frontend</h4>
+                        <span class="persona-badge">--persona-frontend</span>
+                        <p>UI/UX, React, Vue, animations, responsive design</p>
+                        <div class="code-block">
+                            <pre><span class="command-name">/build</span> <span class="command-flag">--component</span> <span class="command-persona">--persona-frontend</span></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card">
+                        <h4>⚙️ Backend</h4>
+                        <span class="persona-badge">--persona-backend</span>
+                        <p>APIs, databases, server architecture, scaling</p>
+                        <div class="code-block">
+                            <pre><span class="command-name">/build</span> <span class="command-flag">--api</span> <span class="command-persona">--persona-backend</span></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card">
+                        <h4>🔒 Security</h4>
+                        <span class="persona-badge">--persona-security</span>
+                        <p>Vulnerability detection, security best practices</p>
+                        <div class="code-block">
+                            <pre><span class="command-name">/scan</span> <span class="command-flag">--penetration</span> <span class="command-persona">--persona-security</span></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card">
+                        <h4>🔍 Analyzer</h4>
+                        <span class="persona-badge">--persona-analyzer</span>
+                        <p>Debugging, profiling, root cause analysis</p>
+                        <div class="code-block">
+                            <pre><span class="command-name">/analyze</span> <span class="command-flag">--memory</span> <span class="command-persona">--persona-analyzer</span></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card">
+                        <h4>✅ QA</h4>
+                        <span class="persona-badge">--persona-qa</span>
+                        <p>Testing strategies, quality assurance, coverage</p>
+                        <div class="code-block">
+                            <pre><span class="command-name">/test</span> <span class="command-flag">--e2e</span> <span class="command-persona">--persona-qa</span></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card">
+                        <h4>⚡ Performance</h4>
+                        <span class="persona-badge">--persona-performance</span>
+                        <p>Speed optimization, caching, load balancing</p>
+                        <div class="code-block">
+                            <pre><span class="command-name">/improve</span> <span class="command-flag">--optimize</span> <span class="command-persona">--persona-performance</span></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card">
+                        <h4>🧹 Refactorer</h4>
+                        <span class="persona-badge">--persona-refactorer</span>
+                        <p>Clean code, patterns, technical debt reduction</p>
+                        <div class="code-block">
+                            <pre><span class="command-name">/improve</span> <span class="command-flag">--clean</span> <span class="command-persona">--persona-refactorer</span></pre>
+                        </div>
+                    </div>
+
+                    <div class="command-card">
+                        <h4>👨‍🏫 Mentor</h4>
+                        <span class="persona-badge">--persona-mentor</span>
+                        <p>Teaching, documentation, best practices guidance</p>
+                        <div class="code-block">
+                            <pre><span class="command-name">/explain</span> <span class="command-flag">--detailed</span> <span class="command-persona">--persona-mentor</span></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workflows Tab -->
+        <div id="workflows" class="content-section">
+            <div class="card">
+                <h3>🔗 Power Workflows</h3>
+                <p>Chain commands for complex development scenarios</p>
+
+                <div class="command-card">
+                    <h4>🚀 New Project Setup</h4>
+                    <p>Complete project initialization workflow</p>
+                    <div class="code-block">
+                        <pre># 1. Setup environment
+<span class="command-name">/dev-setup</span> <span class="command-flag">--node</span> <span class="command-flag">--typescript</span> <span class="command-flag">--eslint</span>
+
+# 2. Build initial structure
+<span class="command-name">/build</span> <span class="command-flag">--scaffold</span> <span class="command-flag">--react</span> <span class="command-persona">--persona-architect</span>
+
+# 3. Setup testing
+<span class="command-name">/test</span> <span class="command-flag">--setup</span> <span class="command-flag">--jest</span> <span class="command-flag">--cypress</span>
+
+# 4. Configure CI/CD
+<span class="command-name">/deploy</span> <span class="command-flag">--ci</span> <span class="command-flag">--github-actions</span></pre>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <h4>🐛 Production Emergency</h4>
+                    <p>Rapid response for production issues</p>
+                    <div class="code-block">
+                        <pre># 1. Analyze the issue
+<span class="command-name">/analyze</span> <span class="command-flag">--logs</span> <span class="command-flag">--metrics</span> <span class="command-persona">--persona-analyzer</span> <span class="command-flag">--ultrathink</span>
+
+# 2. Identify root cause
+<span class="command-name">/troubleshoot</span> <span class="command-flag">--production</span> <span class="command-flag">--trace</span> <span class="command-flag">--seq</span>
+
+# 3. Deploy hotfix
+<span class="command-name">/build</span> <span class="command-flag">--hotfix</span> <span class="command-flag">--minimal</span> <span class="command-flag">--uc</span>
+
+# 4. Verify fix
+<span class="command-name">/test</span> <span class="command-flag">--smoke</span> <span class="command-flag">--production</span></pre>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <h4>📈 Performance Optimization</h4>
+                    <p>Complete performance improvement workflow</p>
+                    <div class="code-block">
+                        <pre># 1. Profile current performance
+<span class="command-name">/analyze</span> <span class="command-flag">--performance</span> <span class="command-flag">--profile</span> <span class="command-persona">--persona-performance</span>
+
+# 2. Identify bottlenecks
+<span class="command-name">/troubleshoot</span> <span class="command-flag">--slow</span> <span class="command-flag">--database</span> <span class="command-flag">--api</span>
+
+# 3. Optimize code
+<span class="command-name">/improve</span> <span class="command-flag">--performance</span> <span class="command-flag">--caching</span> <span class="command-flag">--async</span>
+
+# 4. Validate improvements
+<span class="command-name">/test</span> <span class="command-flag">--load</span> <span class="command-flag">--benchmark</span></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Common Scenarios Tab -->
+        <div id="scenarios" class="content-section">
+            <div class="card">
+                <h3>🎯 Common Development Scenarios</h3>
+                
+                <div class="command-card">
+                    <h4>🆕 Building From Scratch</h4>
+                    <p>Starting a new project? Here's your command sequence:</p>
+                    <div class="demo-container">
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                            <strong>Scenario:</strong> "I need to build a SaaS dashboard with React and Node.js"
+                        </p>
+                        <div class="demo-output">
+                            <p>🎯 For your SaaS dashboard project, here's your SuperClaude magic:</p>
+                            <div class="code-block">
+                                <pre># Setup full-stack environment
+<span class="command-name">/dev-setup</span> <span class="command-flag">--react</span> <span class="command-flag">--node</span> <span class="command-flag">--postgres</span> <span class="command-flag">--docker</span>
+
+# Build the architecture
+<span class="command-name">/design</span> <span class="command-flag">--saas</span> <span class="command-flag">--multi-tenant</span> <span class="command-persona">--persona-architect</span> <span class="command-flag">--think-hard</span>
+
+# Create the frontend
+<span class="command-name">/build</span> <span class="command-flag">--dashboard</span> <span class="command-flag">--react</span> <span class="command-flag">--tailwind</span> <span class="command-persona">--persona-frontend</span> <span class="command-flag">--magic</span>
+
+# Build the API
+<span class="command-name">/build</span> <span class="command-flag">--api</span> <span class="command-flag">--rest</span> <span class="command-flag">--auth</span> <span class="command-persona">--persona-backend</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <h4>🔥 Taming Wild Codebases</h4>
+                    <p>Inherited a messy codebase? Here's how to tackle it:</p>
+                    <div class="demo-container">
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                            <strong>Scenario:</strong> "Just inherited a 5-year-old jQuery app with no tests"
+                        </p>
+                        <div class="demo-output">
+                            <p>🎯 For taming this legacy codebase, here's your SuperClaude magic:</p>
+                            <div class="code-block">
+                                <pre># First, understand what we're dealing with
+<span class="command-name">/analyze</span> <span class="command-flag">--codebase</span> <span class="command-flag">--dependencies</span> <span class="command-flag">--debt</span> <span class="command-persona">--persona-analyzer</span>
+
+# Document the existing functionality
+<span class="command-name">/document</span> <span class="command-flag">--reverse-engineer</span> <span class="command-flag">--behavior</span> <span class="command-persona">--persona-mentor</span>
+
+# Add tests before refactoring
+<span class="command-name">/test</span> <span class="command-flag">--legacy</span> <span class="command-flag">--characterization</span> <span class="command-persona">--persona-qa</span>
+
+# Gradual modernization
+<span class="command-name">/improve</span> <span class="command-flag">--incremental</span> <span class="command-flag">--jquery-to-react</span> <span class="command-persona">--persona-refactorer</span> <span class="command-flag">--seq</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <h4>🐛 Emergency Debugging</h4>
+                    <p>Production on fire? Here's your emergency response:</p>
+                    <div class="demo-container">
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                            <strong>Scenario:</strong> "API response times suddenly 10x slower in production"
+                        </p>
+                        <div class="demo-output">
+                            <p>🎯 For your API performance emergency, here's your SuperClaude magic:</p>
+                            <div class="code-block">
+                                <pre># Immediate analysis
+<span class="command-name">/troubleshoot</span> <span class="command-flag">--api</span> <span class="command-flag">--performance</span> <span class="command-flag">--urgent</span> <span class="command-persona">--persona-analyzer</span> <span class="command-flag">--ultrathink</span>
+
+# Deep dive into bottlenecks
+<span class="command-name">/analyze</span> <span class="command-flag">--database</span> <span class="command-flag">--queries</span> <span class="command-flag">--n+1</span> <span class="command-flag">--seq</span>
+
+# Quick fixes
+<span class="command-name">/improve</span> <span class="command-flag">--performance</span> <span class="command-flag">--cache</span> <span class="command-flag">--indexes</span> <span class="command-flag">--uc</span>
+
+# Verify and monitor
+<span class="command-name">/test</span> <span class="command-flag">--performance</span> <span class="command-flag">--load</span> <span class="command-flag">--monitor</span></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enterprise Tab -->
+        <div id="enterprise" class="content-section">
+            <div class="card">
+                <h3>🏢 Enterprise-Grade Workflows</h3>
+                
+                <div class="command-card">
+                    <h4>🚀 Microservices Migration</h4>
+                    <p>Breaking down monoliths into scalable services</p>
+                    <div class="code-block">
+                        <pre># Analyze monolith structure
+<span class="command-name">/analyze</span> <span class="command-flag">--monolith</span> <span class="command-flag">--boundaries</span> <span class="command-persona">--persona-architect</span> <span class="command-flag">--think-hard</span>
+
+# Design microservices architecture
+<span class="command-name">/design</span> <span class="command-flag">--microservices</span> <span class="command-flag">--event-driven</span> <span class="command-flag">--ddd</span>
+
+# Extract first service
+<span class="command-name">/build</span> <span class="command-flag">--extract-service</span> <span class="command-flag">--strangler-fig</span> <span class="command-flag">--api-gateway</span>
+
+# Setup orchestration
+<span class="command-name">/deploy</span> <span class="command-flag">--kubernetes</span> <span class="command-flag">--helm</span> <span class="command-flag">--service-mesh</span></pre>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <h4>🔒 Security Compliance</h4>
+                    <p>Meeting enterprise security standards</p>
+                    <div class="code-block">
+                        <pre># Full security audit
+<span class="command-name">/scan</span> <span class="command-flag">--comprehensive</span> <span class="command-flag">--owasp</span> <span class="command-flag">--pci</span> <span class="command-persona">--persona-security</span>
+
+# Fix critical vulnerabilities
+<span class="command-name">/improve</span> <span class="command-flag">--security</span> <span class="command-flag">--critical</span> <span class="command-flag">--automated</span>
+
+# Implement security policies
+<span class="command-name">/build</span> <span class="command-flag">--security-headers</span> <span class="command-flag">--rbac</span> <span class="command-flag">--encryption</span>
+
+# Continuous monitoring
+<span class="command-name">/deploy</span> <span class="command-flag">--security-monitoring</span> <span class="command-flag">--siem</span> <span class="command-flag">--alerts</span></pre>
+                    </div>
+                </div>
+
+                <div class="command-card">
+                    <h4>📊 Data Pipeline Optimization</h4>
+                    <p>Building scalable data processing systems</p>
+                    <div class="code-block">
+                        <pre># Analyze current pipeline
+<span class="command-name">/analyze</span> <span class="command-flag">--data-flow</span> <span class="command-flag">--bottlenecks</span> <span class="command-persona">--persona-performance</span>
+
+# Design optimized architecture
+<span class="command-name">/design</span> <span class="command-flag">--etl</span> <span class="command-flag">--streaming</span> <span class="command-flag">--kafka</span> <span class="command-persona">--persona-architect</span>
+
+# Implement improvements
+<span class="command-name">/build</span> <span class="command-flag">--pipeline</span> <span class="command-flag">--parallel</span> <span class="command-flag">--spark</span>
+
+# Setup monitoring
+<span class="command-name">/deploy</span> <span class="command-flag">--data-monitoring</span> <span class="command-flag">--metrics</span> <span class="command-flag">--alerting</span></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🛡️ Special Flags for Enterprise</h3>
+                <div class="grid">
+                    <div class="feature-card">
+                        <h4>--ultrathink</h4>
+                        <p>Maximum reasoning depth for complex architectural decisions</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>--seq</h4>
+                        <p>Sequential reasoning for step-by-step problem solving</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>--uc</h4>
+                        <p>Ultra-compressed mode for token optimization in large codebases</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Demo Section -->
+        <div class="card" id="demo">
+            <h3>🎮 Interactive Demo</h3>
+            <p>Try the Genie! Describe your development challenge:</p>
+            <div class="demo-container">
+                <input type="text" class="demo-input" placeholder="e.g., 'I have a React app with slow renders'" onkeypress="handleDemoInput(event)">
+                <button class="btn btn-primary" onclick="generateCommand()">Generate Commands</button>
+                <div class="demo-output" id="demo-output">
+                    <p style="color: var(--text-muted);">Your SuperClaude commands will appear here...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="tooltip">
+                <button class="quick-action-btn" onclick="scrollToTop()">⬆️</button>
+                <span class="tooltiptext">Back to Top</span>
+            </div>
+            <div class="tooltip">
+                <button class="quick-action-btn" onclick="copyPrompt()">📋</button>
+                <span class="tooltiptext">Copy Genie Prompt</span>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>🧞 SuperClaude Genie - Transform your AI into a SuperClaude wizard</p>
+        <p style="color: var(--text-muted); margin-top: 1rem;">Made with ✨ for developers who build amazing things</p>
+    </footer>
+
+    <script>
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all content sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected section
+            const selectedSection = document.getElementById(tabName);
+            if (selectedSection) {
+                selectedSection.classList.add('active');
+            }
+            
+            // Mark selected tab as active
+            event.target.classList.add('active');
+        }
+
+        // Copy prompt functionality
+        function copyPrompt() {
+            const promptText = `You are SuperClaude Genie 🧞, an expert assistant specialized in generating precise SuperClaude commands for developers. You have mastered all 19 SuperClaude commands, 9 personas, and every flag combination...`;
+            
+            navigator.clipboard.writeText(promptText).then(() => {
+                // Show success feedback
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = 'var(--success)';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            });
+        }
+
+        // Demo functionality
+        function generateCommand() {
+            const input = document.querySelector('.demo-input').value;
+            const output = document.getElementById('demo-output');
+            
+            if (!input) {
+                output.innerHTML = '<p style="color: var(--error);">Please describe your development challenge first!</p>';
+                return;
+            }
+
+            // Simulate command generation
+            const commands = getCommandsForScenario(input.toLowerCase());
+            output.innerHTML = commands;
+        }
+
+        function handleDemoInput(event) {
+            if (event.key === 'Enter') {
+                generateCommand();
+            }
+        }
+
+        function getCommandsForScenario(input) {
+            // Simple keyword matching for demo
+            if (input.includes('slow') || input.includes('performance')) {
+                return `
+                    <p>🎯 For your performance issue, here's your SuperClaude magic:</p>
+                    <div class="code-block">
+                        <pre><span class="command-name">/analyze</span> <span class="command-flag">--performance</span> <span class="command-flag">--profile</span> <span class="command-persona">--persona-performance</span>
+
+<span class="command-name">/troubleshoot</span> <span class="command-flag">--render</span> <span class="command-flag">--react</span> <span class="command-flag">--seq</span>
+
+<span class="command-name">/improve</span> <span class="command-flag">--performance</span> <span class="command-flag">--memoization</span> <span class="command-flag">--lazy-load</span></pre>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-top: 1rem;">✨ This will profile your app, identify render bottlenecks, and implement optimizations!</p>
+                `;
+            } else if (input.includes('bug') || input.includes('error')) {
+                return `
+                    <p>🎯 For debugging your issue, here's your SuperClaude magic:</p>
+                    <div class="code-block">
+                        <pre><span class="command-name">/troubleshoot</span> <span class="command-flag">--debug</span> <span class="command-flag">--trace</span> <span class="command-persona">--persona-analyzer</span> <span class="command-flag">--think-hard</span>
+
+<span class="command-name">/analyze</span> <span class="command-flag">--error-patterns</span> <span class="command-flag">--logs</span>
+
+<span class="command-name">/build</span> <span class="command-flag">--fix</span> <span class="command-flag">--test</span> <span class="command-flag">--uc</span></pre>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-top: 1rem;">✨ This will trace the error, analyze patterns, and build a tested fix!</p>
+                `;
+            } else if (input.includes('build') || input.includes('create')) {
+                return `
+                    <p>🎯 For building your feature, here's your SuperClaude magic:</p>
+                    <div class="code-block">
+                        <pre><span class="command-name">/design</span> <span class="command-flag">--architecture</span> <span class="command-flag">--best-practices</span> <span class="command-persona">--persona-architect</span>
+
+<span class="command-name">/build</span> <span class="command-flag">--feature</span> <span class="command-flag">--complete</span> <span class="command-persona">--persona-frontend</span> <span class="command-flag">--magic</span>
+
+<span class="command-name">/test</span> <span class="command-flag">--unit</span> <span class="command-flag">--integration</span> <span class="command-persona">--persona-qa</span></pre>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-top: 1rem;">✨ This will design, build, and test your feature with best practices!</p>
+                `;
+            } else {
+                return `
+                    <p>🎯 Based on your needs, here's a general SuperClaude workflow:</p>
+                    <div class="code-block">
+                        <pre><span class="command-name">/analyze</span> <span class="command-flag">--requirements</span> <span class="command-flag">--context</span> <span class="command-persona">--persona-architect</span>
+
+<span class="command-name">/build</span> <span class="command-flag">--solution</span> <span class="command-flag">--best-practices</span> <span class="command-flag">--think</span>
+
+<span class="command-name">/test</span> <span class="command-flag">--comprehensive</span> <span class="command-persona">--persona-qa</span></pre>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-top: 1rem;">✨ Try being more specific about your challenge for targeted commands!</p>
+                `;
+            }
+        }
+
+        // Search functionality
+        function searchContent(query) {
+            // Simple search implementation - in production, use a proper search library
+            console.log('Searching for:', query);
+        }
+
+        // Scroll functionality
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add copy buttons to all code blocks
+            document.querySelectorAll('.code-block').forEach(block => {
+                if (!block.querySelector('.copy-btn')) {
+                    const btn = document.createElement('button');
+                    btn.className = 'copy-btn';
+                    btn.textContent = 'Copy';
+                    btn.onclick = function() {
+                        const code = block.querySelector('pre').textContent;
+                        navigator.clipboard.writeText(code).then(() => {
+                            btn.textContent = 'Copied!';
+                            setTimeout(() => btn.textContent = 'Copy', 2000);
+                        });
+                    };
+                    block.appendChild(btn);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
