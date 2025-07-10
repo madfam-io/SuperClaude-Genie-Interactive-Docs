@@ -1,9 +1,9 @@
-#\!/usr/bin/env sh
+#!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
 # Check if pushing to main branch
 protected_branch='main'
-current_branch=$(git symbolic-ref HEAD  < /dev/null |  sed 's\!refs/heads/\!\!')
+current_branch=$(git symbolic-ref HEAD | sed 's!refs/heads/!!')
 
 if [ "$current_branch" = "$protected_branch" ]; then
     echo "🔒 Pushing to main branch - running additional checks..."
@@ -11,13 +11,13 @@ if [ "$current_branch" = "$protected_branch" ]; then
     # Final security scan
     echo "Running final security scan..."
     if find . -name "*.env*" -o -name "*.key" -o -name "*.pem" | grep -v node_modules | head -1 > /dev/null; then
-        echo "❌ Sensitive files detected\! Remove before pushing to main."
+        echo "❌ Sensitive files detected! Remove before pushing to main."
         exit 1
     fi
     
     # Check for large files
     if find . -size +10M -type f | grep -v node_modules | head -1 > /dev/null; then
-        echo "❌ Large files detected\! Consider using Git LFS."
+        echo "❌ Large files detected! Consider using Git LFS."
         exit 1
     fi
     
