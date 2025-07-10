@@ -37,13 +37,19 @@ module.exports = {
           yellow: '#f59e0b',    // Warning yellow
         },
         
-        // Neon accents for highlights
+        // Neon accents for highlights - enhanced cyberpunk palette
         neon: {
-          blue: '#00d4ff',
-          purple: '#a855f7',
-          green: '#22c55e',
-          orange: '#ff8c00',
-          pink: '#f472b6',
+          blue: '#00d4ff',      // Electric blue
+          cyan: '#00ffff',      // Pure cyan
+          purple: '#a855f7',    // Electric purple
+          magenta: '#ff00ff',   // Pure magenta
+          green: '#22c55e',     // Matrix green
+          lime: '#00ff00',      // Electric lime
+          orange: '#ff8c00',    // Neon orange
+          yellow: '#ffff00',    // Electric yellow
+          pink: '#f472b6',      // Hot pink
+          red: '#ff0040',       // Neon red
+          white: '#ffffff',     // Pure white
         },
         
         // Borders and surfaces
