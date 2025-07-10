@@ -27,15 +27,7 @@ export function AttachmentIntegration() {
     setIsDragOver(false)
   }, [])
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragOver(false)
-    
-    const droppedFiles = Array.from(e.dataTransfer.files)
-    processFiles(droppedFiles)
-  }, [])
-
-  const processFiles = (fileList: File[]) => {
+  const processFiles = useCallback((fileList: File[]) => {
     fileList.forEach(file => {
       const attachmentFile: AttachmentFile = {
         id: Math.random().toString(36).substring(2, 9),
@@ -48,7 +40,15 @@ export function AttachmentIntegration() {
       setFiles(prev => [...prev, attachmentFile])
       showNotification(`File "${file.name}" uploaded and analyzed`, 'success')
     })
-  }
+  }, [showNotification])
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragOver(false)
+    
+    const droppedFiles = Array.from(e.dataTransfer.files)
+    processFiles(droppedFiles)
+  }, [processFiles])
 
   const generateAnalysis = (file: File): string[] => {
     const extension = file.name.split('.').pop()?.toLowerCase()
