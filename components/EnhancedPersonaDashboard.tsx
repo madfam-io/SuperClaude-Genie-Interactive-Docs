@@ -100,7 +100,7 @@ export function EnhancedPersonaDashboard() {
       rotateX: 0,
       scale: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 100,
         damping: 15,
         duration: 0.6
@@ -255,7 +255,7 @@ export function EnhancedPersonaDashboard() {
                 initial={{ scale: 0.5, opacity: 0, rotateX: -15 }}
                 animate={{ scale: 1, opacity: 1, rotateX: 0 }}
                 exit={{ scale: 0.5, opacity: 0, rotateX: 15 }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                transition={{ type: "spring" as const, stiffness: 300, damping: 30 }}
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center mb-6">

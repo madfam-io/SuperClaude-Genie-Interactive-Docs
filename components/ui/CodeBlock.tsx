@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { useNotification } from '../NotificationProvider'
 
 interface CodeBlockProps {
@@ -26,39 +27,81 @@ export function CodeBlock({ code, language = 'text', title, copyButton = true, c
     }
   }
 
+  const languageColors: Record<string, string> = {
+    javascript: 'bg-yellow-500/20 text-yellow-300',
+    typescript: 'bg-blue-500/20 text-blue-300',
+    python: 'bg-green-500/20 text-green-300',
+    bash: 'bg-gray-500/20 text-gray-300',
+    json: 'bg-purple-500/20 text-purple-300',
+    css: 'bg-pink-500/20 text-pink-300',
+    html: 'bg-orange-500/20 text-orange-300',
+  }
+
   return (
-    <div className={`bg-bg-dark rounded-lg overflow-hidden border border-white/10 ${className}`}>
+    <motion.div 
+      className={`bg-gray-900 dark:bg-gray-950 rounded-xl overflow-hidden border border-gray-700 dark:border-gray-800 shadow-lg ${className}`}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
       {title && (
-        <div className="flex justify-between items-center px-4 py-2 bg-bg-card border-b border-white/10">
-          <span className="text-text-primary font-medium">{title}</span>
+        <div className="flex justify-between items-center px-4 py-3 bg-gray-800 dark:bg-gray-900 border-b border-gray-700 dark:border-gray-800">
+          <div className="flex items-center gap-3">
+            <span className="text-gray-100 font-medium">{title}</span>
+            {language && (
+              <span className={`text-xs px-2 py-1 rounded-full font-mono ${languageColors[language] || 'bg-gray-500/20 text-gray-300'}`}>
+                {language}
+              </span>
+            )}
+          </div>
           {copyButton && (
-            <button
+            <motion.button
               onClick={handleCopy}
-              className="text-text-muted hover:text-primary transition-colors duration-200 flex items-center space-x-1"
+              className="text-gray-400 hover:text-gray-200 transition-colors duration-200 flex items-center space-x-2 px-3 py-1 rounded-lg hover:bg-gray-700"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
+              <motion.div
+                initial={false}
+                animate={{ rotate: copied ? 360 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                {copied ? '✅' : '📋'}
+              </motion.div>
               <span className="text-sm">{copied ? 'Copied!' : 'Copy'}</span>
-            </button>
+            </motion.button>
           )}
         </div>
       )}
-      <div className="relative">
-        <pre className="p-4 overflow-x-auto text-sm">
-          <code className={`language-${language} text-text-primary`}>
+      <div className="relative group">
+        <pre className="p-4 overflow-x-auto text-sm bg-gray-900 dark:bg-gray-950">
+          <code className={`language-${language} text-gray-100 font-mono leading-relaxed`}>
             {code}
           </code>
         </pre>
         {copyButton && !title && (
-          <button
+          <motion.button
             onClick={handleCopy}
-            className="absolute top-2 right-2 bg-bg-card hover:bg-primary text-text-secondary hover:text-white px-2 py-1 rounded text-xs transition-colors duration-200"
+            className="absolute top-3 right-3 bg-gray-800/80 backdrop-blur-sm hover:bg-gray-700 text-gray-300 hover:text-white px-3 py-2 rounded-lg text-xs transition-all duration-200 opacity-0 group-hover:opacity-100 border border-gray-600"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
           >
-            {copied ? 'Copied!' : 'Copy'}
-          </button>
+            <motion.div
+              className="flex items-center gap-2"
+              animate={{ 
+                scale: copied ? [1, 1.2, 1] : 1,
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              {copied ? '✅' : '📋'}
+              <span>{copied ? 'Copied!' : 'Copy'}</span>
+            </motion.div>
+          </motion.button>
         )}
       </div>
-    </div>
+    </motion.div>
   )
 }

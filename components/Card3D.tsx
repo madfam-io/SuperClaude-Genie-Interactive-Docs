@@ -66,7 +66,7 @@ export function Card3D({
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
       whileHover={{ scale: 1.02 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      transition={{ type: 'spring' as const, stiffness: 300, damping: 30 }}
     >
       <motion.div
         style={{

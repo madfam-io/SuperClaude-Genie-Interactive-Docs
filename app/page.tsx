@@ -14,10 +14,13 @@ import { AttachmentIntegration } from '@/components/AttachmentIntegration'
 import { Footer } from '@/components/Footer'
 import { NotificationProvider } from '@/components/NotificationProvider'
 import { ParallaxSection } from '@/components/ParallaxSection'
+import { CommandSearch } from '@/components/CommandSearch'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 export default function Home() {
   const [mounted, setMounted] = useState(false)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [searchOpen, setSearchOpen] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -26,8 +29,20 @@ export default function Home() {
       setMousePosition({ x: e.clientX, y: e.clientY })
     }
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setSearchOpen(true)
+      }
+    }
+
     window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
+    window.addEventListener('keydown', handleKeyDown)
+    
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('keydown', handleKeyDown)
+    }
   }, [])
 
   if (!mounted) {
@@ -57,7 +72,7 @@ export default function Home() {
               y: mousePosition.y - 12,
             }}
             transition={{
-              type: "spring",
+              type: "spring" as const,
               stiffness: 500,
               damping: 28,
             }}
@@ -134,13 +149,27 @@ export default function Home() {
           </motion.div>
 
           {/* Floating Action Elements */}
-          <div className="fixed bottom-20 right-8 z-40">
+          <div className="fixed bottom-8 right-8 z-40">
             <motion.div
               className="flex flex-col space-y-4"
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 2, duration: 0.5 }}
             >
+              {/* Command Search */}
+              <motion.button
+                onClick={() => setSearchOpen(true)}
+                className="w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full shadow-lg flex items-center justify-center text-2xl"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                title="Search Commands (⌘K)"
+              >
+                🔍
+              </motion.button>
+
+              {/* Theme Toggle */}
+              <ThemeToggle />
+
               {/* Magic Wand */}
               <motion.button
                 className="w-14 h-14 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-lg flex items-center justify-center text-2xl"
@@ -155,7 +184,6 @@ export default function Home() {
                 }}
                 transition={{ duration: 2, repeat: Infinity }}
                 onClick={() => {
-                  // Add magic effect
                   const sparkles = document.createElement('div')
                   sparkles.className = 'fixed inset-0 pointer-events-none z-50'
                   sparkles.innerHTML = Array.from({ length: 20 }).map(() => 
@@ -167,18 +195,17 @@ export default function Home() {
               >
                 🪄
               </motion.button>
-
-              {/* Settings */}
-              <motion.button
-                className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center text-xl border border-white/20"
-                whileHover={{ scale: 1.1, rotate: 180 }}
-                whileTap={{ scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-              >
-                ⚙️
-              </motion.button>
             </motion.div>
           </div>
+
+          {/* Command Search Modal */}
+          <CommandSearch 
+            isOpen={searchOpen}
+            onClose={() => setSearchOpen(false)}
+            onCommandSelect={(command) => {
+              console.log('Selected command:', command)
+            }}
+          />
 
           {/* Progress Indicator */}
           <motion.div

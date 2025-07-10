@@ -43,7 +43,7 @@ export function EnhancedHero() {
       y: 0,
       opacity: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 100,
         damping: 10
       }
@@ -57,7 +57,7 @@ export function EnhancedHero() {
       y: 0,
       rotateX: 0,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 100,
         damping: 12
       }
@@ -207,7 +207,7 @@ export function EnhancedHero() {
             className="relative"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 1.2, type: "spring", stiffness: 100 }}
+            transition={{ delay: 1.2, type: "spring" as const, stiffness: 100 }}
           >
             <SearchBox 
               value={searchQuery}
