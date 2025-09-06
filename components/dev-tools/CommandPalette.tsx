@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Search, 
@@ -359,6 +359,12 @@ export default function CommandPalette({
     }
   }, [isOpen])
 
+  const executeCommand = useCallback((command: CommandItem) => {
+    command.action()
+    onCommand?.(command)
+    onClose()
+  }, [onCommand, onClose])
+
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -396,7 +402,7 @@ export default function CommandPalette({
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, filteredCommands, selectedIndex, activeCategory, categories, onClose])
+  }, [isOpen, filteredCommands, selectedIndex, activeCategory, categories, onClose, executeCommand])
 
   // Auto-scroll selected item into view
   useEffect(() => {
@@ -407,12 +413,6 @@ export default function CommandPalette({
       }
     }
   }, [selectedIndex])
-
-  const executeCommand = (command: CommandItem) => {
-    command.action()
-    onCommand?.(command)
-    onClose()
-  }
 
   if (!isOpen) return null
 

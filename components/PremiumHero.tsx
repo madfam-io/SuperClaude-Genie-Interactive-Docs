@@ -40,8 +40,9 @@ export function PremiumHero() {
       }
     }
 
-    heroRef.current?.addEventListener('mousemove', handleMouseMove)
-    return () => heroRef.current?.removeEventListener('mousemove', handleMouseMove)
+    const element = heroRef.current
+    element?.addEventListener('mousemove', handleMouseMove)
+    return () => element?.removeEventListener('mousemove', handleMouseMove)
   }, [mouseX, mouseY])
 
   const scrollToSection = (sectionId: string) => {

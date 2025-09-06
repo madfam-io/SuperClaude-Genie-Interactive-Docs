@@ -42,7 +42,7 @@ export function PremiumNavigation() {
     handleScroll() // Call once to set initial state
     
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [navItems])
 
   const handleNavClick = (href: string) => {
     const element = document.getElementById(href.substring(1))

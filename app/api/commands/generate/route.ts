@@ -1,19 +1,27 @@
-import { NextRequest } from 'next/server';
-import { withMiddleware, createErrorResponse, createSuccessResponse, getSessionData } from '@/lib/middleware';
-import { GenerateCommandsRequestSchema, ValidationError } from '@/lib/types';
-import { superClaudeAI } from '@/lib/openai';
-import { sessionManager, ContextAnalyzer } from '@/lib/session-manager';
-import { CommandParser } from '@/lib/command-parser';
+import { NextRequest } from "next/server";
+import {
+  withMiddleware,
+  createErrorResponse,
+  createSuccessResponse,
+  getSessionData,
+} from "@/lib/middleware";
+import { GenerateCommandsRequestSchema, ValidationError } from "@/lib/types";
+import { superClaudeAI } from "@/lib/openai";
+import { sessionManager, ContextAnalyzer } from "@/lib/session-manager";
+import { CommandParser } from "@/lib/command-parser";
 
 async function generateCommandsHandler(req: NextRequest) {
   try {
     // Parse request body
     const body = await req.json();
-    
+
     // Validate request
     const validationResult = GenerateCommandsRequestSchema.safeParse(body);
     if (!validationResult.success) {
-      throw new ValidationError('Invalid request format', validationResult.error.errors);
+      throw new ValidationError(
+        "Invalid request format",
+        validationResult.error.errors,
+      );
     }
 
     const request = validationResult.data;
@@ -50,16 +58,20 @@ async function generateCommandsHandler(req: NextRequest) {
     }
 
     // Generate commands using streaming
-    const streamResponse = await superClaudeAI.generateCommands(enhancedRequest);
+    const streamResponse =
+      await superClaudeAI.generateCommands(enhancedRequest);
 
     // Update session with the command request
     if (session) {
-      sessionManager.addCommandToHistory(session.id, `Generate: ${request.prompt}`);
+      sessionManager.addCommandToHistory(
+        session.id,
+        `Generate: ${request.prompt}`,
+      );
     }
 
     return streamResponse;
   } catch (error) {
-    console.error('Command generation error:', error);
+    console.error("Command generation error:", error);
     return createErrorResponse(error as Error, req);
   }
 }
@@ -68,11 +80,14 @@ async function generateCommandsJSONHandler(req: NextRequest) {
   try {
     // Parse request body
     const body = await req.json();
-    
+
     // Validate request
     const validationResult = GenerateCommandsRequestSchema.safeParse(body);
     if (!validationResult.success) {
-      throw new ValidationError('Invalid request format', validationResult.error.errors);
+      throw new ValidationError(
+        "Invalid request format",
+        validationResult.error.errors,
+      );
     }
 
     const request = validationResult.data;
@@ -107,10 +122,11 @@ async function generateCommandsJSONHandler(req: NextRequest) {
     }
 
     // Generate commands as JSON
-    const commands = await superClaudeAI.generateCommandsAsJSON(enhancedRequest);
+    const commands =
+      await superClaudeAI.generateCommandsAsJSON(enhancedRequest);
 
     // Validate generated commands
-    const validatedCommands = commands.map(cmd => {
+    const validatedCommands = commands.map((cmd) => {
       const parsed = CommandParser.parse(cmd.command);
       return {
         ...cmd,
@@ -122,7 +138,10 @@ async function generateCommandsJSONHandler(req: NextRequest) {
 
     // Update session with the command request
     if (session) {
-      sessionManager.addCommandToHistory(session.id, `Generate: ${request.prompt}`);
+      sessionManager.addCommandToHistory(
+        session.id,
+        `Generate: ${request.prompt}`,
+      );
     }
 
     return createSuccessResponse({
@@ -135,7 +154,7 @@ async function generateCommandsJSONHandler(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('JSON command generation error:', error);
+    console.error("JSON command generation error:", error);
     return createErrorResponse(error as Error, req);
   }
 }
@@ -143,8 +162,10 @@ async function generateCommandsJSONHandler(req: NextRequest) {
 // Main route handler
 export async function POST(req: NextRequest) {
   // Check if client wants JSON response
-  const acceptHeader = req.headers.get('accept');
-  const wantsJSON = acceptHeader?.includes('application/json') && !acceptHeader?.includes('text/stream');
+  const acceptHeader = req.headers.get("accept");
+  const wantsJSON =
+    acceptHeader?.includes("application/json") &&
+    !acceptHeader?.includes("text/stream");
 
   if (wantsJSON) {
     return withMiddleware(generateCommandsJSONHandler)(req);
@@ -159,12 +180,12 @@ export async function GET(req: NextRequest) {
   return withMiddleware(async (req: NextRequest) => {
     try {
       const searchParams = req.nextUrl.searchParams;
-      const persona = searchParams.get('persona');
+      const persona = searchParams.get("persona");
 
       let examples: string[] = [];
       if (persona) {
         // Get persona-specific examples
-        const { getPersonaContext } = await import('@/lib/personas');
+        const { getPersonaContext } = await import("@/lib/personas");
         const personaContext = getPersonaContext(persona);
         if (personaContext) {
           examples = personaContext.commandExamples;
@@ -172,12 +193,12 @@ export async function GET(req: NextRequest) {
       } else {
         // Get general examples
         examples = [
-          '/build --react --typescript --component-library',
-          '/scan --security --vulnerabilities --owasp',
-          '/troubleshoot --performance --memory --database',
-          '/improve --refactor --clean-code --documentation',
-          '/deploy --aws --auto-scaling --monitoring',
-          '/dev-setup --docker --testing --ci-cd',
+          "/build --react --typescript --component-library",
+          "/scan --security --vulnerabilities --owasp",
+          "/troubleshoot --performance --memory --database",
+          "/improve --refactor --clean-code --documentation",
+          "/deploy --aws --auto-scaling --monitoring",
+          "/dev-setup --docker --testing --ci-cd",
         ];
       }
 
@@ -187,12 +208,23 @@ export async function GET(req: NextRequest) {
         examples,
         help: helpText,
         availableCommands: [
-          'build', 'dev-setup', 'troubleshoot', 
-          'improve', 'deploy', 'scan'
+          "build",
+          "dev-setup",
+          "troubleshoot",
+          "improve",
+          "deploy",
+          "scan",
         ],
         supportedPersonas: [
-          'architect', 'frontend', 'backend', 'security',
-          'analyzer', 'qa', 'performance', 'refactorer', 'mentor'
+          "architect",
+          "frontend",
+          "backend",
+          "security",
+          "analyzer",
+          "qa",
+          "performance",
+          "refactorer",
+          "mentor",
         ],
       });
     } catch (error) {

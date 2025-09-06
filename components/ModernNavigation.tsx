@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, Menu, X, Command, ArrowRight } from 'lucide-react'
 
@@ -23,6 +23,13 @@ export default function ModernNavigation({ onSearchToggle }: NavigationProps) {
     { id: 'personas', label: 'Personas', href: '#personas' },
     { id: 'docs', label: 'Docs', href: '#docs' },
   ]
+  
+  // Define toggleSearch function first
+  const toggleSearch = useCallback(() => {
+    const newState = !searchOpen
+    setSearchOpen(newState)
+    onSearchToggle?.(newState)
+  }, [searchOpen, onSearchToggle])
   
   // Handle scroll effects
   useEffect(() => {
@@ -49,7 +56,7 @@ export default function ModernNavigation({ onSearchToggle }: NavigationProps) {
     
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [searchOpen])
+  }, [searchOpen, onSearchToggle, toggleSearch])
   
   // Focus search input when opened
   useEffect(() => {
@@ -57,12 +64,6 @@ export default function ModernNavigation({ onSearchToggle }: NavigationProps) {
       searchInputRef.current.focus()
     }
   }, [searchOpen])
-  
-  const toggleSearch = () => {
-    const newState = !searchOpen
-    setSearchOpen(newState)
-    onSearchToggle?.(newState)
-  }
   
   const scrollToSection = (href: string) => {
     const element = document.querySelector(href)

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect, ReactNode } from 'react'
+import { useState, useRef, useEffect, ReactNode, useCallback } from 'react'
 import { motion, AnimatePresence, PanInfo } from 'framer-motion'
 import { 
   Sidebar, 
@@ -244,6 +244,12 @@ export default function DevToolsLayout({
     custom: layout
   }
 
+  const applyPreset = useCallback((preset: LayoutPreset) => {
+    const newLayout = { ...layout, ...presets[preset], preset }
+    setLayout(newLayout)
+    onLayoutChange?.(newLayout)
+  }, [layout, presets, onLayoutChange])
+
   // Responsive breakpoints
   useEffect(() => {
     const updateResponsiveMode = () => {
@@ -261,13 +267,7 @@ export default function DevToolsLayout({
     updateResponsiveMode()
     window.addEventListener('resize', updateResponsiveMode)
     return () => window.removeEventListener('resize', updateResponsiveMode)
-  }, [])
-
-  const applyPreset = (preset: LayoutPreset) => {
-    const newLayout = { ...layout, ...presets[preset], preset }
-    setLayout(newLayout)
-    onLayoutChange?.(newLayout)
-  }
+  }, [applyPreset])
 
   const togglePanel = (panel: keyof Omit<LayoutState, 'preset'>) => {
     const newLayout = {

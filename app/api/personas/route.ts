@@ -1,19 +1,26 @@
-import { NextRequest } from 'next/server';
-import { withMiddleware, createErrorResponse, createSuccessResponse } from '@/lib/middleware';
-import { getAllPersonas, getPersonaContext } from '@/lib/personas';
+import { NextRequest } from "next/server";
+import {
+  withMiddleware,
+  createErrorResponse,
+  createSuccessResponse,
+} from "@/lib/middleware";
+import { getAllPersonas, getPersonaContext } from "@/lib/personas";
 
 // Get all personas or specific persona
 export async function GET(req: NextRequest) {
   return withMiddleware(async (req: NextRequest) => {
     try {
       const searchParams = req.nextUrl.searchParams;
-      const personaId = searchParams.get('id');
+      const personaId = searchParams.get("id");
 
       if (personaId) {
         // Get specific persona
         const persona = getPersonaContext(personaId);
         if (!persona) {
-          return createErrorResponse(new Error(`Persona not found: ${personaId}`), req);
+          return createErrorResponse(
+            new Error(`Persona not found: ${personaId}`),
+            req,
+          );
         }
 
         return createSuccessResponse({
@@ -22,9 +29,9 @@ export async function GET(req: NextRequest) {
       } else {
         // Get all personas
         const personas = getAllPersonas();
-        
+
         // Create summary for list view
-        const personasSummary = personas.map(persona => ({
+        const personasSummary = personas.map((persona) => ({
           id: persona.id,
           name: persona.name,
           description: persona.description,

@@ -54,11 +54,7 @@
       "name": "Browser MCP",
       "description": "Alternative browser control and automation",
       "command": "mcp-server-browsermcp",
-      "capabilities": [
-        "Browser control",
-        "Web automation",
-        "DOM manipulation"
-      ],
+      "capabilities": ["Browser control", "Web automation", "DOM manipulation"],
       "status": "active"
     }
   },

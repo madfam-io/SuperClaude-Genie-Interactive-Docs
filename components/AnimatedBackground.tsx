@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 export function AnimatedBackground() {
   return (
@@ -12,5 +12,5 @@ export function AnimatedBackground() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(99,102,241,0.1)_0%,transparent_50%),radial-gradient(circle_at_80%_20%,rgba(139,92,246,0.1)_0%,transparent_50%),radial-gradient(circle_at_40%_40%,rgba(236,72,153,0.05)_0%,transparent_50%)] animate-rotate"></div>
       </div>
     </div>
-  )
+  );
 }

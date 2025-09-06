@@ -78,7 +78,7 @@ export function PremiumGenieInterface() {
     }
 
     initializeAPI()
-  }, [])
+  }, [api, phase, selectedTech, showNotification])
 
   const generateCommands = async () => {
     if (!request.trim()) {

@@ -1,25 +1,25 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useState } from "react";
+import { motion } from "framer-motion";
 
 interface CopyButtonProps {
-  text: string
-  className?: string
+  text: string;
+  className?: string;
 }
 
-export function CopyButton({ text, className = '' }: CopyButtonProps) {
-  const [copied, setCopied] = useState(false)
+export function CopyButton({ text, className = "" }: CopyButtonProps) {
+  const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(text)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Failed to copy:', err)
+      console.error("Failed to copy:", err);
     }
-  }
+  };
 
   return (
     <motion.button
@@ -53,5 +53,5 @@ export function CopyButton({ text, className = '' }: CopyButtonProps) {
       </motion.div>
       <div className="w-4 h-4 opacity-0">📋</div>
     </motion.button>
-  )
+  );
 }

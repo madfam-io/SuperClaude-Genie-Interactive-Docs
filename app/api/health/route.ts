@@ -1,19 +1,23 @@
-import { NextRequest } from 'next/server';
-import { withMiddleware, createSuccessResponse, createErrorResponse } from '@/lib/middleware';
-import { config } from '@/lib/config';
-import { sessionManager } from '@/lib/session-manager';
-import { getAllPersonas } from '@/lib/personas';
+import { NextRequest } from "next/server";
+import {
+  withMiddleware,
+  createSuccessResponse,
+  createErrorResponse,
+} from "@/lib/middleware";
+import { config } from "@/lib/config";
+import { sessionManager } from "@/lib/session-manager";
+import { getAllPersonas } from "@/lib/personas";
 
 export async function GET(req: NextRequest) {
   return withMiddleware(async (req: NextRequest) => {
     try {
       const searchParams = req.nextUrl.searchParams;
-      const detailed = searchParams.get('detailed') === 'true';
+      const detailed = searchParams.get("detailed") === "true";
 
       const health = {
-        status: 'healthy',
+        status: "healthy",
         timestamp: new Date().toISOString(),
-        version: '1.0.0',
+        version: "1.0.0",
         environment: config.NODE_ENV,
       };
 
@@ -26,20 +30,20 @@ export async function GET(req: NextRequest) {
           ...health,
           services: {
             openai: {
-              status: config.OPENAI_API_KEY ? 'configured' : 'not_configured',
+              status: config.OPENAI_API_KEY ? "configured" : "not_configured",
               hasApiKey: !!config.OPENAI_API_KEY,
             },
             sessions: {
-              status: 'active',
+              status: "active",
               stats: sessionStats,
             },
             personas: {
-              status: 'active',
+              status: "active",
               count: personas.length,
-              available: personas.map(p => ({ id: p.id, name: p.name })),
+              available: personas.map((p) => ({ id: p.id, name: p.name })),
             },
             rateLimiting: {
-              status: 'active',
+              status: "active",
               windowMs: config.RATE_LIMIT_WINDOW_MS,
               maxRequests: config.RATE_LIMIT_MAX_REQUESTS,
             },
@@ -54,17 +58,18 @@ export async function GET(req: NextRequest) {
             commandSimulation: true,
           },
           endpoints: {
-            'POST /api/commands/generate': 'Generate SuperClaude commands with streaming',
-            'GET /api/commands/generate': 'Get command examples and help',
-            'POST /api/commands/simulate': 'Simulate command execution',
-            'GET /api/commands/simulate': 'Validate commands and get help',
-            'POST /api/sessions': 'Create new session',
-            'GET /api/sessions': 'Get session stats or specific session',
-            'PUT /api/sessions/[id]': 'Update session context',
-            'DELETE /api/sessions/[id]': 'Delete session',
-            'GET /api/personas': 'List all personas',
-            'GET /api/personas/[id]': 'Get specific persona details',
-            'GET /api/health': 'System health check',
+            "POST /api/commands/generate":
+              "Generate SuperClaude commands with streaming",
+            "GET /api/commands/generate": "Get command examples and help",
+            "POST /api/commands/simulate": "Simulate command execution",
+            "GET /api/commands/simulate": "Validate commands and get help",
+            "POST /api/sessions": "Create new session",
+            "GET /api/sessions": "Get session stats or specific session",
+            "PUT /api/sessions/[id]": "Update session context",
+            "DELETE /api/sessions/[id]": "Delete session",
+            "GET /api/personas": "List all personas",
+            "GET /api/personas/[id]": "Get specific persona details",
+            "GET /api/health": "System health check",
           },
         };
 
